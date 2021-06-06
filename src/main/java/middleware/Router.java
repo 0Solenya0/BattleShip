@@ -1,10 +1,12 @@
 package middleware;
 
 import config.RouterConfig;
+import db.exception.ConnectionException;
 import handler.RequestHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import request.Packet;
+import request.StatusCode;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -25,6 +27,10 @@ public class Router extends Middleware {
                             + req.target + " - "
                             + e.getMessage());
                     e.printStackTrace();
+                } catch (ConnectionException e) {
+                    logger.error("Connection to database failed");
+                    e.printStackTrace();
+                    return new Packet(StatusCode.INTERNAL_SERVER_ERROR);
                 }
             }
         // No routes matched returning null

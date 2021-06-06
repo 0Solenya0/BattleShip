@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-public abstract class DBSet<T extends Model> {
+public class DBSet<T extends Model> {
     private static final Logger logger = LogManager.getLogger(DBSet.class);
     Class<T> modelClass;
 
@@ -115,5 +115,7 @@ public abstract class DBSet<T extends Model> {
         return model;
     }
 
-    public abstract void validate(T model) throws ConnectionException, ValidationException;
+    public void validate(T model) throws ConnectionException, ValidationException {
+
+    }
 }

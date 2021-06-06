@@ -17,7 +17,6 @@ public class RequestHandler {
     public RequestHandler(Packet req) {
         this.req = req;
         curMid = -1;
-        next();
     }
 
     public Packet next() {

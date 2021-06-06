@@ -1,7 +1,7 @@
 package config;
 
 import controller.Controller;
-import controller.FirstController;
+import controller.LoginController;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -10,7 +10,7 @@ public class RouterConfig {
     private static ArrayList<Route> routes = new ArrayList<>();
 
     public static void initiate() {
-        routes.add(new Route("mani", FirstController.class));
+        routes.add(new Route("login", LoginController.class));
     }
 
     public static ArrayList<Route> getRoutes() {
@@ -27,6 +27,8 @@ public class RouterConfig {
         }
 
         public boolean isMatched(String url) {
+            if (url == null)
+                return false;
             return pattern.matcher(url).matches();
         }
 
