@@ -1,6 +1,6 @@
 package middleware;
 
-import config.RouteConfig;
+import config.RouterConfig;
 import handler.RequestHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,7 @@ public class Router extends Middleware {
 
     @Override
     public Packet process() {
-        for (RouteConfig.Route route: RouteConfig.getRoutes())
+        for (RouterConfig.Route route: RouterConfig.getRoutes())
             if (route.isMatched(req.target)) {
                 try {
                     return route.getTarget().getConstructor().newInstance().respond(req);

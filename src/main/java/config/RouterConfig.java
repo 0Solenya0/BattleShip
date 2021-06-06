@@ -1,16 +1,16 @@
 package config;
 
-import view.View;
-import view.FirstView;
+import controller.Controller;
+import controller.FirstController;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class RouteConfig {
+public class RouterConfig {
     private static ArrayList<Route> routes = new ArrayList<>();
 
     public static void initiate() {
-        routes.add(new Route("mani", FirstView.class));
+        routes.add(new Route("mani", FirstController.class));
     }
 
     public static ArrayList<Route> getRoutes() {
@@ -19,9 +19,9 @@ public class RouteConfig {
 
     public static class Route {
         private final Pattern pattern;
-        private final Class<? extends View> target;
+        private final Class<? extends Controller> target;
 
-        public Route(String regex, Class<? extends View> target) {
+        public Route(String regex, Class<? extends Controller> target) {
             this.pattern = Pattern.compile(regex);
             this.target = target;
         }
@@ -30,7 +30,7 @@ public class RouteConfig {
             return pattern.matcher(url).matches();
         }
 
-        public Class<? extends View> getTarget() {
+        public Class<? extends Controller> getTarget() {
             return target;
         }
     }

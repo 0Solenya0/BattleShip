@@ -10,7 +10,7 @@ public class Config {
 
     public static void initiate() {
         //Initiate apps and middleware config
-        RouteConfig.initiate();
+        RouterConfig.initiate();
 
         middlewares.add(Router.class);
     }
