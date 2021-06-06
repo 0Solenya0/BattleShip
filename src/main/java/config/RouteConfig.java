@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class RouteConfig {
-    private static ArrayList<Route> routes;
+    private static ArrayList<Route> routes = new ArrayList<>();
 
     public static void initiate() {
         routes.add(new Route("mani", FirstView.class));

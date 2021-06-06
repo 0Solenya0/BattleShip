@@ -15,8 +15,10 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket(8080);
         ExecutorService pool = Executors.newFixedThreadPool(10); // TO DO config
         Config.initiate();
+        System.out.println("Ready for new connections");
         while (true) {
             Socket socket = serverSocket.accept();
+            System.out.println("A client got connected");
             pool.execute(() -> {
                 try {
                     new ClientHandler(socket);
