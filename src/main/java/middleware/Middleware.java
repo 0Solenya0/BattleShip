@@ -3,11 +3,11 @@ package middleware;
 import handler.RequestHandler;
 import request.Packet;
 
-public abstract class AbstractMiddleware {
+public abstract class Middleware {
     protected Packet req;
     private RequestHandler handler;
 
-    public AbstractMiddleware(Packet req, RequestHandler p) {
+    public Middleware(Packet req, RequestHandler p) {
         this.req = req;
         this.handler = p;
     }

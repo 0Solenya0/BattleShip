@@ -8,7 +8,7 @@ import request.Packet;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Router extends AbstractMiddleware {
+public class Router extends Middleware {
     private static final Logger logger = LogManager.getLogger(Router.class);
     public Router(Packet req, RequestHandler p) {
         super(req, p);

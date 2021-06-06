@@ -1,5 +1,5 @@
 import config.Config;
-import handler.ClientHandler;
+import handler.Client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public class Server {
             System.out.println("A client got connected");
             pool.execute(() -> {
                 try {
-                    new ClientHandler(socket);
+                    new Client(socket);
                 } catch (IOException e) {
                     logger.error("Connection with socket failed");
                     e.printStackTrace();

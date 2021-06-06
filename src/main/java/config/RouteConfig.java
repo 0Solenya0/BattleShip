@@ -1,6 +1,6 @@
 package config;
 
-import view.AbstractView;
+import view.View;
 import view.FirstView;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ public class RouteConfig {
 
     public static class Route {
         private final Pattern pattern;
-        private final Class<? extends AbstractView> target;
+        private final Class<? extends View> target;
 
-        public Route(String regex, Class<? extends AbstractView> target) {
+        public Route(String regex, Class<? extends View> target) {
             this.pattern = Pattern.compile(regex);
             this.target = target;
         }
@@ -30,7 +30,7 @@ public class RouteConfig {
             return pattern.matcher(url).matches();
         }
 
-        public Class<? extends AbstractView> getTarget() {
+        public Class<? extends View> getTarget() {
             return target;
         }
     }

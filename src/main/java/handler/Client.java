@@ -4,19 +4,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import request.Packet;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.Socket;
 
-public class ClientHandler {
-    private static final Logger logger = LogManager.getLogger(ClientHandler.class);
+public class Client {
+    private static final Logger logger = LogManager.getLogger(Client.class);
     Socket socket;
     ObjectInputStream inputStream;
+    ObjectOutputStream outputStream;
     Thread clientThread;
 
-    public ClientHandler(Socket socket) throws IOException {
+    public Client(Socket socket) throws IOException {
         this.socket = socket;
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
         clientThread = new Thread(this::requestListener);
         clientThread.start();

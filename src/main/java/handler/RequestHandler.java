@@ -1,7 +1,7 @@
 package handler;
 
 import config.Config;
-import middleware.AbstractMiddleware;
+import middleware.Middleware;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import request.Packet;
@@ -24,9 +24,9 @@ public class RequestHandler {
         curMid++;
         if (curMid == Config.getMiddlewares().size())
             return null;
-        Class<? extends AbstractMiddleware> MiddlewareClass = Config.getMiddlewares().get(curMid);
+        Class<? extends Middleware> MiddlewareClass = Config.getMiddlewares().get(curMid);
         try {
-            Constructor<? extends AbstractMiddleware> constructor = MiddlewareClass
+            Constructor<? extends Middleware> constructor = MiddlewareClass
                     .getConstructor(Packet.class, RequestHandler.class);
             return constructor.newInstance(req, this).process();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
