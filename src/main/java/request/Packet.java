@@ -2,9 +2,8 @@ package request;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import db.gsonAdapter.LocalDateAdapter;
-import db.gsonAdapter.LocalDateTimeAdapter;
+import gsonAdapter.LocalDateAdapter;
+import gsonAdapter.LocalDateTimeAdapter;
 
 import java.io.Serializable;
 import java.time.LocalDate;

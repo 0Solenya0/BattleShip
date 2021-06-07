@@ -14,8 +14,6 @@ public class RegistrationController extends Controller {
     public Packet respond(Packet req) throws ConnectionException {
         String username = req.getOrNull("username");
         String password = req.getOrNull("password");
-        if (username == null || password == null)
-            return new Packet(StatusCode.BAD_REQUEST);
         Packet response = new Packet(StatusCode.OK);
         User user = new User(username, password);
         try {
@@ -23,6 +21,7 @@ public class RegistrationController extends Controller {
         } catch (ValidationException e) {
             return response.addData("error", "validation").addObject("validation", e);
         }
+        System.out.println("ok");
         return new Packet(StatusCode.CREATED);
     }
 }
