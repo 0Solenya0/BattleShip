@@ -137,5 +137,7 @@ public class DBSet<T extends Model> {
                     validationException.addError(field.getName(), field.getName() + " is not unique");
             }
         }
+        if (validationException.hasError())
+            throw new ValidationException();
     }
 }

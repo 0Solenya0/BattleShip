@@ -11,6 +11,11 @@ public enum StatusCode {
             return 200;
         }
     },
+    CREATED{
+        public int getCode() {
+          return 201;
+      }
+    },
     INTERNAL_SERVER_ERROR{
         public int getCode() {
             return 500;
