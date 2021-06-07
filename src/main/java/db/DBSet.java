@@ -1,7 +1,8 @@
-package db.dbset;
+package db;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import db.annotation.Unique;
 import db.exception.ConnectionException;
 import db.exception.ValidationException;
 import db.gsonAdapter.LocalDateAdapter;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -116,6 +118,24 @@ public class DBSet<T extends Model> {
     }
 
     public void validate(T model) throws ConnectionException, ValidationException {
-
+        ValidationException validationException = new ValidationException();
+        for (Field field: modelClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.getAnnotation(Unique.class) != null) {
+                T m = getFirst(obj -> {
+                    if (obj.id == model.id)
+                        return false;
+                    try {
+                        return field.get(obj) != null && field.get(obj).equals(field.get(model));
+                    } catch (IllegalAccessException e) {
+                        logger.fatal("validation failed, failed to access models field - " + e.getMessage());
+                        e.printStackTrace();
+                        return false;
+                    }
+                });
+                if (m != null)
+                    validationException.addError(field.getName(), field.getName() + " is not unique");
+            }
+        }
     }
 }
