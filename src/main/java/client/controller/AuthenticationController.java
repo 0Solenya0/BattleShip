@@ -13,7 +13,7 @@ public class AuthenticationController {
         packet.addData("username", username);
         packet.addData("password", password);
         Packet response = PacketSender.sendPacket(packet);
-        String authToken = response.getOrNull("AuthToken");
+        String authToken = response.getOrNull("auth-token");
         if (authToken == null)
             throw new ResponseException(response.getOrNull("error"));
         UserData.setAuthToken(authToken);

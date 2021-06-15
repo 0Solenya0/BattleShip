@@ -39,6 +39,10 @@ public class Packet implements Serializable {
         return this;
     }
 
+    public boolean hasKey(String key) {
+        return data.containsKey(key);
+    }
+
     public <T> Packet addObject(String key, T obj) {
         data.put(key, gson.toJson(obj));
         return this;

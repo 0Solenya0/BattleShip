@@ -3,6 +3,7 @@ package server.controller;
 import server.db.Context;
 import server.db.exception.ConnectionException;
 import server.db.model.User;
+import server.middleware.Auth;
 import shared.request.StatusCode;
 import shared.request.Packet;
 
@@ -17,8 +18,11 @@ public class LoginController extends Controller {
             return new Packet(StatusCode.BAD_REQUEST);
         Packet response = new Packet(StatusCode.OK);
         User user = context.users.getFirst(u -> u.getUsername().equals(username));
-        if (user != null && user.checkPassword(password))
-            return response.addData("AuthToken", "123").addData("userId", String.valueOf(user.id)); // TO DO Handle AuthToken
+        if (user != null && user.checkPassword(password)) {
+            Auth.addToken("123", user.id);
+            return response.addData("auth-token", "123")
+                    .addData("user-id", String.valueOf(user.id)); // TO DO Handle AuthToken
+        }
         return response.addData("error", "Username or password is wrong!");
     }
 }
