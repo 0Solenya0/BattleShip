@@ -1,10 +1,9 @@
 package server.game;
 
-import server.handler.Client;
+import shared.handler.SocketHandler;
 import shared.lock.CustomLock;
 
 import java.util.LinkedList;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
@@ -27,11 +26,11 @@ public class PlayerPool {
         players = new LinkedList<>();
     }
 
-    public void addPlayer(Client client, int userid) {
-        removePlayer(client);// TO DO remove with respect to userid
+    public void addPlayer(SocketHandler socketHandler, int userid) {
+        removePlayer(socketHandler);// TO DO remove with respect to userid
         lock.lock();
         System.out.println("added new player to pool");
-        Player player = new Player(client, userid);
+        Player player = new Player(socketHandler, userid);
         players.add(player);
         System.out.println(players.size());
         while (players.size() >= 2) {
@@ -44,10 +43,10 @@ public class PlayerPool {
         lock.unlock();
     }
 
-    public void removePlayer(Client client) {
+    public void removePlayer(SocketHandler socketHandler) {
         lock.lock();
         for (Player player: players)
-            if (player.getClient().equals(client)) {
+            if (player.getClient().equals(socketHandler)) {
                 players.remove(player);
                 System.out.println("removed player from pool");
                 break;

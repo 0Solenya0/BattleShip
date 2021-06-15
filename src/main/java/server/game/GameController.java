@@ -5,7 +5,7 @@ import server.db.Context;
 import server.db.exception.ConnectionException;
 import server.db.exception.ValidationException;
 import server.db.model.GameState;
-import server.handler.Client;
+import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shared.lock.CustomLock;
@@ -25,7 +25,7 @@ public class GameController extends Controller {
     private static final ConcurrentHashMap<Integer, GameController> gameControllers = new ConcurrentHashMap<>();
     private GameState gameState;
     private Player[] players = new Player[2];
-    private final ArrayList<Client> visitors = new ArrayList<>();
+    private final ArrayList<SocketHandler> visitors = new ArrayList<>();
     private AtomicInteger rids = new AtomicInteger();
     private final ConcurrentHashMap<Integer, PacketListener> ridReq = new ConcurrentHashMap<>();
     Context context = new Context();

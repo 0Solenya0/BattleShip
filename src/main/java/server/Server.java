@@ -1,7 +1,7 @@
 package server;
 
 import server.config.Config;
-import server.handler.Client;
+import server.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +23,7 @@ public class Server {
             System.out.println("A client got connected");
             pool.execute(() -> {
                 try {
-                    new Client(socket);
+                    new SocketHandler(socket);
                 } catch (IOException e) {
                     logger.error("Connection with socket failed");
                     e.printStackTrace();
