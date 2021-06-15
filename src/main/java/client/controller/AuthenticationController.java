@@ -1,4 +1,4 @@
-package client.Controller;
+package client.controller;
 
 import client.db.UserData;
 import client.request.PacketSender;

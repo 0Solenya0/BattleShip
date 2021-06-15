@@ -1,10 +1,8 @@
 package client.view;
 
-import client.Controller.AuthenticationController;
+import client.controller.AuthenticationController;
 import client.request.exception.ConnectionException;
 import client.request.exception.ValidationException;
-import client.view.AbstractView;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
