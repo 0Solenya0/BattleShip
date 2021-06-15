@@ -10,7 +10,22 @@ public class CustomLock {
         locked = new AtomicBoolean();
     }
 
-    public void lock() throws InterruptedException {
+    public void lock() {
+        synchronized (object) {
+            while (true) {
+                if (locked.get()) {
+                    try {
+                        object.wait();
+                    } catch (InterruptedException ignored) { }
+                }
+                else
+                    break;
+            }
+            locked.set(true);
+        }
+    }
+
+    public void lockIntrupted() throws InterruptedException {
         synchronized (object) {
             while (true) {
                 if (locked.get())

@@ -18,7 +18,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class GameController extends Controller {
     private static int SET_BOARD_TTL = 30000, REFRESH_BOARD_TTL = 10000;
@@ -60,7 +59,7 @@ public class GameController extends Controller {
         CustomLock lock = new CustomLock();
 
         if (wait)
-            lock.lock();
+            lock.lockIntrupted();
         ridReq.put(rid, (p) -> {
             response.set(p);
             if (wait)
@@ -68,7 +67,7 @@ public class GameController extends Controller {
         });
         player.sendPacket(req);
         if (wait)
-            lock.lock();
+            lock.lockIntrupted();
         return response.get();
     }
 

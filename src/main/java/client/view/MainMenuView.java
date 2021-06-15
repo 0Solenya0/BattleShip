@@ -23,7 +23,7 @@ public class MainMenuView extends AbstractView implements Initializable {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             Packet packet = new Packet("pool");
-            packet.addData("AuthToken", "123");
+            packet.addData("auth-token", "123");
             outputStream.writeObject(packet);
         }
         catch (Exception ignored) {
