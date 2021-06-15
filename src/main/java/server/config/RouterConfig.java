@@ -16,7 +16,7 @@ public class RouterConfig {
         routes.add(new Route("login", LoginController.class));
         routes.add(new Route("register", RegistrationController.class));
         routes.add(new Route("pool", PlayerPoolController.class));
-        routes.add(new Route("server/game", GameController.class));
+        routes.add(new Route("game", GameController.class));
     }
 
     public static ArrayList<Route> getRoutes() {
