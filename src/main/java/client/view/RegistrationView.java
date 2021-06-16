@@ -49,13 +49,12 @@ public class RegistrationView extends AbstractView implements Initializable {
     @FXML
     void btnRegisterClicked() throws ConnectionException {
         try {
-            authenticationController.register(txtUsername.getText(), txtPassword.getText(), () -> {
-                try {
-                    btnLoginClicked();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            authenticationController.register(txtUsername.getText(), txtPassword.getText());
+            try {
+                btnLoginClicked();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (ValidationException e) {
             lblErr.setVisible(true);
             lblErr.setText(e.getAllErrors().get(0));

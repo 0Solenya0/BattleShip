@@ -8,26 +8,23 @@ import client.request.exception.ValidationException;
 import shared.request.Packet;
 
 public class AuthenticationController {
-    public void login(String username, String password, Runnable success) throws ConnectionException, ResponseException {
+    public void login(String username, String password) throws ConnectionException, ResponseException {
         Packet packet = new Packet("login");
         packet.addData("username", username);
         packet.addData("password", password);
-        Packet response = SocketHandler.getSocketHandler().sendPacket(packet);
+        Packet response = SocketHandler.getSocketHandler().sendPacketAndGetResponse(packet);
         String authToken = response.getOrNull("auth-token");
         if (authToken == null)
             throw new ResponseException(response.getOrNull("error"));
         UserData.setAuthToken(authToken);
-        success.run();
     }
 
-    public void register(String username, String password, Runnable success) throws ValidationException, ConnectionException {
+    public void register(String username, String password) throws ValidationException, ConnectionException {
         Packet packet = new Packet("register");
         packet.addData("username", username);
         packet.addData("password", password);
-        Packet response = SocketHandler.sendPacket(packet);
-        if (response.status == 201)
-            success.run();
-        else
+        Packet response = SocketHandler.getSocketHandler().sendPacketAndGetResponse(packet);
+        if (response.status != 201)
             throw response.getObject("validation", ValidationException.class);
     }
 }

@@ -46,17 +46,16 @@ public class LoginView extends AbstractView implements Initializable {
     @FXML
     void loginBtnClicked(ActionEvent event) throws ConnectionException {
         try {
-            authenticationController.login(txtUsername.getText(), txtPassword.getText(), () -> {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("MAIN_MENU_VIEW"))));
-                Pane pane = null;
-                try {
-                    pane = fxmlLoader.load();
-                } catch (IOException ignored) { }
+            authenticationController.login(txtUsername.getText(), txtPassword.getText());
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("MAIN_MENU_VIEW"))));
+            Pane pane = null;
+            try {
+                pane = fxmlLoader.load();
+            } catch (IOException ignored) { }
 
-                ViewManager.setScene(new Scene(pane));
-                System.out.println("logged in successfully");
-            });
+            ViewManager.setScene(new Scene(pane));
+            System.out.println("logged in successfully");
         } catch (ResponseException e) {
             lblErr.setVisible(true);
             lblErr.setText(e.getMessage());

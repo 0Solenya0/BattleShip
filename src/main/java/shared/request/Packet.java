@@ -16,7 +16,7 @@ public class Packet implements Serializable {
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
-    public String target;
+    public String target = "";
     public int status;
     private final HashMap<String, String> data = new HashMap<>();
 
