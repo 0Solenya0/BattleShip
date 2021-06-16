@@ -1,5 +1,6 @@
 package client.view;
 
+import client.controller.GameController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,7 +16,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameView implements Initializable {
-    private static final int BOARD_SIZE = 450, DIM = 10;
+    private static final int BOARD_SIZE = 450, DIM = 10; // TO DO add config
 
     @FXML
     private GridPane gridpaneP1, grifpaneP2;
@@ -24,18 +25,9 @@ public class GameView implements Initializable {
     private Label lblP2, lblP1, lblHead;
 
     @FXML
-    private Label lblActiveP1, lblActiveP11;
+    private Label lblActiveP1, lblActiveP2;
 
-    private Node getGridCell(GridPane gridPane, int row, int col) {
-        ObservableList<Node> children = gridPane.getChildren();
-        for (Node node : children) {
-            //if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
-                System.out.println(GridPane.getRowIndex(node));
-                System.out.println(GridPane.getColumnIndex(node));
-            //}
-        }
-        return null;
-    }
+    private GameController gameController;
 
     public GridPane getGrid(int id) {
         if (id == 0)
@@ -43,13 +35,25 @@ public class GameView implements Initializable {
         return grifpaneP2;
     }
 
+    public Label getPlayerLabel(int id) {
+        if (id == 0)
+            return lblP1;
+        return lblP2;
+    }
+
+    public Label getActivatePlayerLabel(int id) {
+        if (id == 0)
+            return lblActiveP1;
+        return lblActiveP2;
+    }
+
     public void cellClicked(int gridId, int r, int col) {
+        gameController.turn.set(1 - gameController.turn.get());
         System.out.println(gridId + " " + r + " " + col);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        for (int k = 0; k < 2; k++)
+    public void startGame() {
+        for (int k = 0; k < 2; k++) {
             for (int i = 0; i < DIM; i++)
                 for (int j = 0; j < DIM; j++) {
                     Rectangle tile = new Rectangle(BOARD_SIZE / DIM, BOARD_SIZE / DIM);
@@ -60,5 +64,29 @@ public class GameView implements Initializable {
                         cellClicked(kk, ii, jj);
                     });
                 }
+        }
+        gameController.p1Name.addObserver((s) -> {
+            updateUserLabel(0, s);
+        });
+        gameController.p2Name.addObserver((s) -> {
+            updateUserLabel(1, s);
+        });
+        gameController.turn.addObserver(this::updateTurn);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        gameController = new GameController(this::startGame);
+    }
+
+    public void updateUserLabel(int playerNumber, String username) {
+        getPlayerLabel(playerNumber).setText(username);
+    }
+
+    public void updateTurn(int turn) {
+        getActivatePlayerLabel(turn % 2).getStyleClass().add("active_icon");
+        getActivatePlayerLabel(turn % 2).getStyleClass().remove("deactive_icon");
+        getActivatePlayerLabel(1 - turn % 2).getStyleClass().add("deactive_icon");
+        getActivatePlayerLabel(1 - turn % 2).getStyleClass().remove("active_icon");
     }
 }
