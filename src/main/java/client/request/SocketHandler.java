@@ -26,7 +26,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
         serviceLock.lock();
         if (socketHandler == null) {
             try {
-                return new SocketHandler(new Socket("localhost", 8080));
+                socketHandler = new SocketHandler(new Socket("localhost", 8080));
             } catch (IOException e) {
                 logger.info("failed to open new connection with server");
                 throw new ConnectionException();

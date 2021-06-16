@@ -32,7 +32,7 @@ public class GameController extends Controller {
     Context context = new Context();
 
     public GameController(Player player1, Player player2) {
-        System.out.println("New server.game created!!!!");
+        System.out.println("New game is getting created!!!! - users: " + player1.getId() + ' ' + player2.getId());
         this.gameState = new GameState();
         try {
             context.gameStates.save(gameState);
@@ -41,7 +41,7 @@ public class GameController extends Controller {
         } catch (ValidationException e) {
             logger.fatal("error while creating an empty server.game state - " + e.getLog());
         }
-        Packet packet = new Packet("new-server.game");
+        Packet packet = new Packet("new-game");
         packet.addObject("game-id", gameState.id);
         player1.sendPacket(packet);
         player2.sendPacket(packet);
@@ -81,10 +81,13 @@ public class GameController extends Controller {
 
             Packet response = null;
             try {
+                System.out.println("new board was sent to player " + player.getId());
+                logger.info("new board was sent to player " + player.getId());
                 response = RidUtilities.sendPacketAndGetResponse(packet, player.getSocketHandler());
             } catch (InterruptedException e) {
                 gameState.setBoard(player.getId(), builder.getBoard());
                 player.setReady(true);
+                System.out.println("automatically set board player timeout");
                 logger.info("skipped user response while setting board due timeout");
                 break;
             }
@@ -93,8 +96,12 @@ public class GameController extends Controller {
             if (response.getOrNull("accept").equals("true") || i == 2) {
                 gameState.setBoard(player.getId(), builder.getBoard());
                 player.setReady(true);
+                System.out.println("player " + player.getId() + " accepted the board");
+                logger.info("player " + player.getId() + " accepted the board");
                 break;
             }
+            System.out.println("player " + player.getId() + " rejected the board");
+            logger.info("player " + player.getId() + " rejected the board");
             time.addAndGet(REFRESH_BOARD_TTL);
         }
         Packet packet = new Packet("set-board");

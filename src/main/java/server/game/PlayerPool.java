@@ -1,5 +1,7 @@
 package server.game;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import server.handler.SocketHandler;
 import shared.lock.CustomLock;
 
@@ -9,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static java.lang.Thread.sleep;
 
 public class PlayerPool {
+    private static final Logger logger = LogManager.getLogger(GameController.class);
     private static final CustomLock serviceLock = new CustomLock();
     private static PlayerPool playerPool;
     private final LinkedList<Player> players;
@@ -29,10 +32,10 @@ public class PlayerPool {
     public void addPlayer(SocketHandler socketHandler, int userid) {
         removePlayer(socketHandler);// TO DO remove with respect to userid
         lock.lock();
-        System.out.println("added new player to pool");
         Player player = new Player(socketHandler, userid);
         players.add(player);
-        System.out.println(players.size());
+        logger.info("player with id " + userid + " was added to pool");
+        System.out.println("new player was added to pool - pool size: " + players.size());
         while (players.size() >= 2) {
             Player player1 = players.poll();
             Player player2 = players.poll();

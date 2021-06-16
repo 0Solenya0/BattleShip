@@ -10,6 +10,7 @@ import shared.request.PacketListener;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,11 +39,11 @@ public abstract class SocketHandler implements PacketListener {
                 System.out.println("Got packet - " + packet.target);
                 listenPacket(packet);
             }
-            catch (EOFException e) {
+            catch (EOFException | SocketException e) {
                 break;
             }
             catch (Exception e) {
-                logger.error("invalid server.server.request was made -" + e.getMessage());
+                logger.error("invalid request was made -" + e.getMessage());
                 e.printStackTrace();
             }
         }
