@@ -76,9 +76,6 @@ public class GameController extends Controller {
                     .randomBoat(1, 8)
                     .randomBoat(1, 9)
                     .randomBoat(1, 10);
-            // player timeout
-            if (time.get() < 3000)
-                break;
             Packet packet = new Packet("new-board");
             packet.addObject("board", builder.getBoard());
 
@@ -86,6 +83,9 @@ public class GameController extends Controller {
             try {
                 System.out.println("new board was sent to player " + player.getId());
                 logger.info("new board was sent to player " + player.getId());
+                // player timeout
+                if (time.get() <= 0)
+                    break;
                 response = RidUtilities.sendPacketAndGetResponse(packet, player.getSocketHandler());
             } catch (InterruptedException e) {
                 gameState.setBoard(player.getId(), builder.getBoard());
@@ -107,6 +107,8 @@ public class GameController extends Controller {
             logger.info("player " + player.getId() + " rejected the board");
             time.addAndGet(REFRESH_BOARD_TTL);
         }
+        timer.purge();
+        timer.cancel();
         Packet packet = new Packet("set-board");
         packet.addObject("board", builder.getBoard());
         player.getSocketHandler().sendPacket(packet);
