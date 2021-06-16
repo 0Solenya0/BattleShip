@@ -54,7 +54,6 @@ public class GameView implements Initializable {
     }
 
     public void cellClicked(int gridId, int r, int col) {
-        gameController.turn.set(1 - gameController.turn.get());
         System.out.println(gridId + " " + r + " " + col);
     }
 
@@ -104,7 +103,7 @@ public class GameView implements Initializable {
                 btnAccept.setVisible(false);
                 btnReject.setVisible(false);
             }
-            if (ref < 2) {
+            if (ref >= 0 && ref < 2) {
                 btnAccept.setVisible(true);
                 btnReject.setVisible(true);
             }

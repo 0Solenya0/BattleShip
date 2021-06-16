@@ -50,13 +50,14 @@ public class GameController {
         started.set(true);
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())
                 .addTargetListener("new-board", this::getNewBoard);
-        SocketHandler.getSocketHandlerWithoutException().addTargetListener(
-                "set-board", this::setFinalBoard);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("set-board", this::setFinalBoard);
     }
 
     public void setFinalBoard(Packet packet) {
         short[][] board = packet.getObject("board", short[][].class);
         finalBoard.set(true);
+        refreshBoard.set(-1);
     }
 
     public void getNewBoard(Packet packet) {
