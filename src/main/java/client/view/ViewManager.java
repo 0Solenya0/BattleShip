@@ -26,7 +26,7 @@ public class ViewManager extends Application {
     public void start(Stage primaryStage) throws IOException {
         window = primaryStage;
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("LOGIN_VIEW"))));
+        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("MAIN_MENU_VIEW"))));
         Pane pane = fxmlLoader.load();
 
         setScene(new Scene(pane));

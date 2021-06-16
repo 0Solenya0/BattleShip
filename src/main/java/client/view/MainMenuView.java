@@ -13,8 +13,8 @@ import java.util.ResourceBundle;
 public class MainMenuView extends AbstractView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        new Thread(this::joinPool).start();
-        new Thread(this::joinPool).start();
+        //new Thread(this::joinPool).start();
+        //new Thread(this::joinPool).start();
     }
 
     public void joinPool() {
