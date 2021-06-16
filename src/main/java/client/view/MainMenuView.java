@@ -1,33 +1,26 @@
 package client.view;
 
-import client.view.AbstractView;
-import javafx.fxml.Initializable;
-import shared.request.Packet;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.URL;
-import java.util.ResourceBundle;
+public class MainMenuView {
 
-public class MainMenuView extends AbstractView implements Initializable {
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //new Thread(this::joinPool).start();
-        //new Thread(this::joinPool).start();
+    @FXML
+    private Button btnNewGame, btnScoreboard, btnProfile;
+
+    @FXML
+    void btnNewGameClicked(ActionEvent event) {
+
     }
 
-    public void joinPool() {
-        try {
-            Socket socket = new Socket("localhost", 8080);
-            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            Packet packet = new Packet("pool");
-            packet.addData("auth-token", "123");
-            outputStream.writeObject(packet);
-        }
-        catch (Exception ignored) {
+    @FXML
+    void btnProfileClicked(ActionEvent event) {
 
-        }
+    }
+
+    @FXML
+    void btnScoreboardClicked(ActionEvent event) {
+
     }
 }
