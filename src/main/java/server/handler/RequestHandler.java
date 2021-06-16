@@ -5,6 +5,7 @@ import server.middleware.Middleware;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shared.request.Packet;
+import shared.request.StatusCode;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +32,7 @@ public class RequestHandler {
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.fatal("failed to instantiate and run server.middleware - " + e.getMessage());
             e.printStackTrace();
-            return null;
+            return new Packet(StatusCode.NOT_FOUND);
         }
     }
 }

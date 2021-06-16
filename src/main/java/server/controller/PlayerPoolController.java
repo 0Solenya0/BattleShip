@@ -4,6 +4,7 @@ import server.db.exception.ConnectionException;
 import server.game.PlayerPool;
 import server.handler.SocketHandler;
 import shared.request.Packet;
+import shared.request.StatusCode;
 
 public class PlayerPoolController extends Controller {
     @Override
@@ -13,6 +14,6 @@ public class PlayerPoolController extends Controller {
         if (!req.hasKey("user-id"))
             return new Packet("pool").addData("error", "user is not logged in");
         PlayerPool.getPlayerPool().addPlayer(socketHandler, Integer.parseInt(req.getOrNull("user-id")));
-        return null;
+        return new Packet(StatusCode.OK);
     }
 }

@@ -20,6 +20,11 @@ public enum StatusCode {
         public int getCode() {
             return 500;
         }
+    },
+    NOT_FOUND{
+        public int getCode(){
+            return 404;
+        }
     };
 
     public abstract int getCode();

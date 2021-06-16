@@ -4,6 +4,7 @@ import server.handler.SocketHandler;
 import server.middleware.ServerRID;
 import shared.lock.CustomLock;
 import shared.request.Packet;
+import shared.request.StatusCode;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -15,7 +16,7 @@ public class RidUtilities {
         int rid = ServerRID.registerListener((p) -> {
             response.set(p);
             lock.unlock();
-            return null;
+            return new Packet(StatusCode.OK);
         });
         packet.addData("rid", rid);
         socketHandler.sendPacket(packet);

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import shared.lock.CustomLock;
 import shared.request.Packet;
 import shared.request.PacketListener;
+import shared.request.StatusCode;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -104,7 +105,7 @@ public class GameController extends Controller {
     @Override
     public Packet respond(Packet req) throws ConnectionException {
         if (req.getOrNull("game-id") == null)
-            return null;
+            return new Packet(StatusCode.NOT_FOUND);
         try {
             GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("game-id")));
             // TO DO answer users requests
@@ -112,6 +113,6 @@ public class GameController extends Controller {
         catch (Exception e) {
             logger.info("Invalid request was sent to game controller - " + e.getMessage());
         }
-        return null;
+        return new Packet(StatusCode.NOT_FOUND);
     }
 }
