@@ -58,6 +58,7 @@ public class GameController {
         short[][] board = packet.getObject("board", short[][].class);
         finalBoard.set(true);
         refreshBoard.set(-1);
+        timeout.set(LocalTime.now());
     }
 
     public void getNewBoard(Packet packet) {

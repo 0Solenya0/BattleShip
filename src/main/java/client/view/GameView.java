@@ -16,7 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameView implements Initializable {
     private static final int BOARD_SIZE = 450, DIM = 10; // TO DO add config
@@ -28,7 +32,7 @@ public class GameView implements Initializable {
     private Button btnAccept, btnReject;
 
     @FXML
-    private Label lblP2, lblP1, lblHead;
+    private Label lblP2, lblP1, lblHead, lblTimer;
 
     @FXML
     private Label lblActiveP1, lblActiveP2;
@@ -55,6 +59,7 @@ public class GameView implements Initializable {
 
     public void cellClicked(int gridId, int r, int col) {
         System.out.println(gridId + " " + r + " " + col);
+        // TO DO clicked
     }
 
     public void addGameController(GameController gameController) {
@@ -94,7 +99,29 @@ public class GameView implements Initializable {
             });
             gameController.turn.addObserver(this::updateTurn);
             gameController.refreshBoard.addObserver(this::updateBtn);
+            gameController.timeout.addObserver(this::updateHead);
         });
+    }
+
+    Timer timer = new Timer();
+    private void updateHead(LocalTime localTime) {
+        timer.purge();
+        timer.cancel();
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    long s = Duration.between(LocalTime.now(), localTime).getSeconds();
+                    if (s < 0) {
+                        lblTimer.setText("");
+                        timer.cancel();
+                        timer.purge();
+                    }
+                    lblTimer.setText(String.valueOf(s));
+                });
+            }
+        }, 500, 500);
     }
 
     public void updateBtn(int ref) {
