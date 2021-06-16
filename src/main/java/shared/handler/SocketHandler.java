@@ -11,6 +11,7 @@ import shared.request.PacketListener;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class SocketHandler implements PacketListener {
     private static final Logger logger = LogManager.getLogger(SocketHandler.class);
 
+    private final ArrayList<Runnable> listeners = new ArrayList<>();
     protected final Socket socket;
     protected final ObjectInputStream inputStream;
     protected final ObjectOutputStream outputStream;
@@ -30,6 +32,10 @@ public abstract class SocketHandler implements PacketListener {
         inputStream = new ObjectInputStream(socket.getInputStream());
         Thread clientThread = new Thread(this::inputListener);
         clientThread.start();
+    }
+
+    public void addListener(Runnable listener) {
+        listeners.add(listener);
     }
 
     private void inputListener() {
@@ -44,6 +50,15 @@ public abstract class SocketHandler implements PacketListener {
             }
             catch (Exception e) {
                 logger.error("invalid request was made -" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        for (Runnable listener: listeners) {
+            try {
+                listener.run();
+            }
+            catch (Exception e) {
+                logger.error("error in socket disconnect listener - " + e.getMessage());
                 e.printStackTrace();
             }
         }

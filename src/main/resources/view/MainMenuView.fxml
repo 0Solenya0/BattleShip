@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="561.0" prefWidth="907.0" styleClass="anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.MainMenuView">
+<AnchorPane prefHeight="669.0" prefWidth="1228.0" style="-fx-background-position: left;" styleClass="anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.MainMenuView">
    <stylesheets>
       <URL value="@style.css" />
    </stylesheets>
    <children>
-      <Button fx:id="btnNewGame" layoutX="361.0" layoutY="146.0" mnemonicParsing="false" onAction="#btnNewGameClicked" prefHeight="32.0" prefWidth="186.0" styleClass="menu_btn" text="New Game">
+      <Button fx:id="btnNewGame" layoutX="509.0" layoutY="309.0" mnemonicParsing="false" onAction="#btnNewGameClicked" prefHeight="32.0" prefWidth="186.0" styleClass="menu_btn" text="New Game">
          <font>
             <Font name="Gargi" size="13.0" />
          </font>
          <graphic>
-            <Label styleClass="icon" text="C" />
+            <Label text="C">
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="white_text" />
+               </styleClass></Label>
          </graphic></Button>
-      <Button fx:id="btnScoreboard" layoutX="377.0" layoutY="318.0" mnemonicParsing="false" onAction="#btnScoreboardClicked" prefHeight="44.0" prefWidth="153.0" styleClass="menu_btn" text="Scoreboard">
+      <Button fx:id="btnScoreboard" layoutX="525.0" layoutY="481.0" mnemonicParsing="false" onAction="#btnScoreboardClicked" prefHeight="44.0" prefWidth="153.0" styleClass="menu_btn" text="Scoreboard">
          <font>
             <Font name="Gargi" size="13.0" />
          </font>
          <graphic>
-            <Label styleClass="icon" text="v" />
+            <Label text="v">
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="white_text" />
+               </styleClass></Label>
          </graphic>
       </Button>
-      <Button fx:id="btnProfile" layoutX="361.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnProfileClicked" prefHeight="32.0" prefWidth="186.0" styleClass="menu_btn" text="Profile">
+      <Button fx:id="btnProfile" layoutX="509.0" layoutY="366.0" mnemonicParsing="false" onAction="#btnProfileClicked" prefHeight="32.0" prefWidth="186.0" styleClass="menu_btn" text="Profile">
          <font>
             <Font name="Gargi" size="13.0" />
          </font>
          <graphic>
-            <Label styleClass="icon" text="b" />
+            <Label text="b">
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="white_text" />
+               </styleClass></Label>
          </graphic>
       </Button>
    </children>

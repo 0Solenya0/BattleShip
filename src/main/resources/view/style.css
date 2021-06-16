@@ -15,6 +15,9 @@
 
 .icon {
     -fx-font-family: 'Pixel Icons Compilation';
+}
+
+.white_text {
     -fx-text-fill: rgb(256, 256, 256);
 }
 
@@ -56,4 +59,17 @@
     -fx-font-size: 50;
     -fx-font-family: 'Pixel Icons Compilation';
     -fx-text-fill: red;
+}
+
+.accept_btn {
+    -fx-font-size: 25;
+    -fx-text-fill: green;
+    -fx-background-color: rgb(10, 10, 10);
+    -fx-background-radius: 30;
+    -fx-background-insets: 0;
+}
+
+.accept_btn:pressed:hover {
+    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.9;
 }

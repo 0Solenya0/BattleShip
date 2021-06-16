@@ -15,7 +15,10 @@ import shared.request.Packet;
 import shared.request.PacketListener;
 import shared.request.StatusCode;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +46,9 @@ public class GameController extends Controller {
         }
         Packet packet = new Packet("new-game");
         packet.addObject("game-id", gameState.id);
+        packet.put("player-id", 0);
         player1.sendPacket(packet);
+        packet.put("player-id", 1);
         player2.sendPacket(packet);
         gameControllers.put(gameState.id, this);
         players[0] = player1;
@@ -66,6 +71,7 @@ public class GameController extends Controller {
         }, 1000, 1000);
         BoardBuilder builder = new BoardBuilder();
         for (int i = 0; i < 3; i++) {
+            builder.clear();
             builder.randomBoat(4, 1)
                     .randomBoat(3, 2)
                     .randomBoat(3, 3)
@@ -78,6 +84,9 @@ public class GameController extends Controller {
                     .randomBoat(1, 10);
             Packet packet = new Packet("new-board");
             packet.addObject("board", builder.getBoard());
+            LocalTime localTime = LocalTime.now();
+            localTime = localTime.plusNanos(time.get() * 1000000L);
+            packet.addObject("timeout", localTime);
 
             Packet response = null;
             try {
@@ -86,19 +95,21 @@ public class GameController extends Controller {
                 // player timeout
                 if (time.get() <= 0)
                     break;
+                // DEBUG
+                builder.printBoard();
                 response = RidUtilities.sendPacketAndGetResponse(packet, player.getSocketHandler());
             } catch (InterruptedException e) {
-                gameState.setBoard(player.getId(), builder.getBoard());
-                player.setReady(true);
                 System.out.println("automatically set board player timeout");
                 logger.info("skipped user response while setting board due timeout");
                 break;
             }
             assert response != null;
-            System.out.println(response.getJson());
-            if (response.getOrNull("accept").equals("true") || i == 2) {
-                gameState.setBoard(player.getId(), builder.getBoard());
-                player.setReady(true);
+            if (i == 2) {
+                System.out.println("player max rejects reached " + player.getPlayerNumber());
+                logger.info("player max rejects reached - " + player.getPlayerNumber());
+                break;
+            }
+            if (response.getOrNull("accept").equals("true")) {
                 System.out.println("player " + player.getId() + " accepted the board");
                 logger.info("player " + player.getId() + " accepted the board");
                 break;
@@ -109,6 +120,9 @@ public class GameController extends Controller {
         }
         timer.purge();
         timer.cancel();
+        gameState.setBoard(player.getPlayerNumber(), builder.getBoard());
+        player.setReady(true);
+        System.out.println("final board was sent to player " + player.getPlayerNumber());
         Packet packet = new Packet("set-board");
         packet.addObject("board", builder.getBoard());
         player.getSocketHandler().sendPacket(packet);

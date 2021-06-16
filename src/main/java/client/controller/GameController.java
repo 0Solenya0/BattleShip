@@ -1,10 +1,15 @@
 package client.controller;
 
 import client.event.ObservableField;
+import client.request.SocketHandler;
+import client.request.exception.ConnectionException;
 import client.view.GameView;
+import shared.request.Packet;
 
 import java.lang.reflect.Array;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameController {
     private static int BOARD_SIZE = 10; // TO DO add config
@@ -12,7 +17,10 @@ public class GameController {
     public final ObservableField<Integer> playerNumber, turn;
     public final ObservableField<String> p1Name, p2Name;
     private ArrayList<ObservableField<Short>> boards;
-    public final ObservableField<Boolean> started;
+    public ObservableField<Integer> refreshBoard;
+    public final ObservableField<Boolean> started, finalBoard;
+    public final ObservableField<LocalTime> timeout;
+    private int boardRid;
 
     public GameController() {
         playerNumber = new ObservableField<>();
@@ -21,9 +29,71 @@ public class GameController {
         turn = new ObservableField<>();
         boards = new ArrayList<>();
         started = new ObservableField<>();
+        started.set(false);
+        finalBoard = new ObservableField<>();
+        timeout = new ObservableField<>();
+        refreshBoard = new ObservableField<>();
+        refreshBoard.set(0);
+        for (int i = 0; i < 2 * BOARD_SIZE * BOARD_SIZE; i++)
+            boards.add(new ObservableField<>());
     }
 
-    public ObservableField<Short> addBoardObserver(int playerNumber, int row, int col) {
+    public void newGame() throws ConnectionException {
+        Packet packet = new Packet("pool");
+        SocketHandler.getSocketHandler().sendPacket(packet);
+        SocketHandler.getSocketHandler().addTargetListener("new-game", this::setupGame);
+    }
+
+    public void setupGame(Packet packet) {
+        gameId = packet.getInt("game-id");
+        playerNumber.set(packet.getInt("player-id"));
+        started.set(true);
+        Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())
+                .addTargetListener("new-board", this::getNewBoard);
+        SocketHandler.getSocketHandlerWithoutException().addTargetListener(
+                "set-board", this::setFinalBoard);
+    }
+
+    public void setFinalBoard(Packet packet) {
+        short[][] board = packet.getObject("board", short[][].class);
+        finalBoard.set(true);
+    }
+
+    public void getNewBoard(Packet packet) {
+        short[][] board = packet.getObject("board", short[][].class);
+        timeout.set(packet.getObject("timeout", LocalTime.class));
+        System.out.println(timeout.get());
+        boardRid = packet.getInt("rid");
+        setBoard(board);
+    }
+
+    public void setBoard(short[][] board) {
+        for (int i = 0; i < BOARD_SIZE; i++)
+            for (int j = 0; j < BOARD_SIZE; j++)
+                setBoardCell(playerNumber.get(), i, j, board[i][j]);
+    }
+
+    public void acceptBoard() {
+        Packet packet = new Packet("game");
+        refreshBoard.set(-1);
+        packet.put("rid", boardRid);
+        packet.put("accept", "true");
+        Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
+    }
+
+    public void rejectBoard() {
+        Packet packet = new Packet("game");
+        refreshBoard.set(refreshBoard.get() + 1);
+        packet.put("rid", boardRid);
+        packet.put("accept", "false");
+        Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
+    }
+
+    private void setBoardCell(int playerNumber, int row, int col, short value) {
+        boards.get(playerNumber * BOARD_SIZE * BOARD_SIZE + row * BOARD_SIZE + col).set(value);
+    }
+
+    public ObservableField<Short> getBoardCell(int playerNumber, int row, int col) {
         return boards.get(playerNumber * BOARD_SIZE * BOARD_SIZE + row * BOARD_SIZE + col);
     }
 }

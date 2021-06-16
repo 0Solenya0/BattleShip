@@ -33,6 +33,9 @@ public class PlayerPool {
         removePlayer(socketHandler);// TO DO remove with respect to userid
         lock.lock();
         Player player = new Player(socketHandler, userid);
+        player.addOnDisconnectListener(() -> {
+            removePlayer(socketHandler); // TO DO
+        });
         players.add(player);
         logger.info("player with id " + userid + " was added to pool");
         System.out.println("new player was added to pool - pool size: " + players.size());

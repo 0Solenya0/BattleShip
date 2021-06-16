@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="645.0" prefWidth="1200.0" styleClass="game_anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.GameView">
+<AnchorPane prefHeight="650.0" prefWidth="1200.0" styleClass="game_anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.GameView">
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>
    <children>
-      <GridPane fx:id="gridpaneP1" gridLinesVisible="true" layoutX="75.0" layoutY="145.0" prefHeight="450.0" prefWidth="450.0" styleClass="board">
+      <GridPane fx:id="gridpaneP1" gridLinesVisible="true" layoutX="89.0" layoutY="121.0" prefHeight="450.0" prefWidth="450.0" styleClass="board">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -38,7 +40,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <GridPane fx:id="grifpaneP2" gridLinesVisible="true" layoutX="665.0" layoutY="145.0" prefHeight="450.0" prefWidth="450.0" styleClass="board">
+      <GridPane fx:id="gridpaneP2" gridLinesVisible="true" layoutX="679.0" layoutY="121.0" prefHeight="450.0" prefWidth="450.0" styleClass="board">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -64,11 +66,23 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Label fx:id="lblP2" layoutX="665.0" layoutY="92.0" styleClass="player_name" text="P2" />
-      <Label fx:id="lblP1" layoutX="75.0" layoutY="92.0" styleClass="player_name" text="P1" />
-      <Label fx:id="lblHead" layoutX="548.0" layoutY="22.0" styleClass="head" text="Label" />
-      <Label fx:id="lblActiveP1" layoutX="31.0" layoutY="88.0" styleClass="active_icon" text="G" />
-      <Label fx:id="lblActiveP2" layoutX="623.0" layoutY="88.0" styleClass="deactive_icon" text="G" />
+      <Label fx:id="lblP2" layoutX="679.0" layoutY="68.0" styleClass="player_name" text="P2" />
+      <Label fx:id="lblP1" layoutX="89.0" layoutY="68.0" styleClass="player_name" text="P1" />
+      <Label fx:id="lblHead" layoutY="10.0" prefHeight="53.0" prefWidth="1200.0" style="-fx-alignment: center;" styleClass="head" text="Label" />
+      <Label fx:id="lblActiveP1" layoutX="45.0" layoutY="64.0" styleClass="active_icon" text="G" />
+      <Label fx:id="lblActiveP2" layoutX="637.0" layoutY="64.0" styleClass="deactive_icon" text="G" />
+      <Button fx:id="btnAccept" layoutX="548.0" layoutY="583.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#btnAcceptClicked" prefHeight="53.0" prefWidth="54.0" text="C">
+         <styleClass>
+            <String fx:value="icon" />
+            <String fx:value="accept_btn" />
+         </styleClass>
+      </Button>
+      <Button fx:id="btnReject" layoutX="614.0" layoutY="583.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#btnRejectClicked" prefHeight="53.0" prefWidth="54.0" text="O">
+         <styleClass>
+            <String fx:value="icon" />
+            <String fx:value="accept_btn" />
+         </styleClass>
+      </Button>
    </children>
 
 </AnchorPane>

@@ -1,5 +1,6 @@
 package client.request;
 
+import client.db.UserData;
 import client.request.exception.ConnectionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +37,15 @@ public class SocketHandler extends shared.handler.SocketHandler {
         return socketHandler;
     }
 
+    public static SocketHandler getSocketHandlerWithoutException() {
+        try {
+            return getSocketHandler();
+        } catch (ConnectionException e) {
+            // TO DO display connection error by viewmanager
+            return null;
+        }
+    }
+
     public SocketHandler(Socket socket) throws IOException {
         super(socket);
     }
@@ -43,7 +53,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
     public void sendPacketAndListen(Packet packet, PacketListener packetListener) {
         int rid = lastRid.addAndGet(1);
         ridListeners.put(rid, packetListener);
-        packet.addData("m-rid", rid);
+        packet.put("m-rid", rid);
         sendPacket(packet);
     }
 
@@ -51,7 +61,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
         AtomicReference<Packet> response = new AtomicReference<>();
         CustomLock lock = new CustomLock();
         int rid = lastRid.addAndGet(1);
-        packet.addData("m-rid", rid);
+        packet.put("m-rid", rid);
         lock.lock();
         ridListeners.put(rid, (p) -> {
             response.set(p);
@@ -60,6 +70,13 @@ public class SocketHandler extends shared.handler.SocketHandler {
         sendPacket(packet);
         lock.lock();
         return response.get();
+    }
+
+    @Override
+    public void sendPacket(Packet packet) {
+        if (UserData.getAuthToken() != null)
+            packet.put("auth-token", UserData.getAuthToken());
+        super.sendPacket(packet);
     }
 
     public void addTargetListener(String target, PacketListener listener) {

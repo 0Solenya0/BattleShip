@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import shared.gsonAdapter.LocalDateAdapter;
 import shared.gsonAdapter.LocalDateTimeAdapter;
+import shared.gsonAdapter.LocalTimeAdapter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 
 public class Packet implements Serializable {
@@ -15,6 +17,7 @@ public class Packet implements Serializable {
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
             .create();
     public String target = "";
     public int status;
@@ -34,12 +37,12 @@ public class Packet implements Serializable {
         return null;
     }
 
-    public Packet addData(String key, String value) {
+    public Packet put(String key, String value) {
         data.put(key, value);
         return this;
     }
 
-    public Packet addData(String key, int value) {
+    public Packet put(String key, int value) {
         data.put(key, String.valueOf(value));
         return this;
     }

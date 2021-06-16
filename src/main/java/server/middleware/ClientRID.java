@@ -17,7 +17,8 @@ public class ClientRID extends Middleware {
         if (req.hasKey("m-rid"))
             rid = req.getInt("m-rid");
         Packet response = next();
-        response.addData("m-rid", rid);
+        if (rid != -1)
+            response.put("m-rid", rid);
         return response;
     }
 }

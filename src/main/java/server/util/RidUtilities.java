@@ -18,7 +18,7 @@ public class RidUtilities {
             lock.unlock();
             return new Packet(StatusCode.OK);
         });
-        packet.addData("rid", rid);
+        packet.put("rid", rid);
         socketHandler.sendPacket(packet);
         lock.lockIntrupted();
         return response.get();

@@ -44,4 +44,8 @@ public class Player {
     public void sendPacket(Packet packet) {
         socketHandler.sendPacket(packet);
     }
+
+    public void addOnDisconnectListener(Runnable runnable) {
+        socketHandler.addListener(runnable);
+    }
 }

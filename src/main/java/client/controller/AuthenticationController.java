@@ -10,8 +10,8 @@ import shared.request.Packet;
 public class AuthenticationController {
     public void login(String username, String password) throws ConnectionException, ResponseException {
         Packet packet = new Packet("login");
-        packet.addData("username", username);
-        packet.addData("password", password);
+        packet.put("username", username);
+        packet.put("password", password);
         Packet response = SocketHandler.getSocketHandler().sendPacketAndGetResponse(packet);
         String authToken = response.getOrNull("auth-token");
         if (authToken == null)
@@ -21,8 +21,8 @@ public class AuthenticationController {
 
     public void register(String username, String password) throws ValidationException, ConnectionException {
         Packet packet = new Packet("register");
-        packet.addData("username", username);
-        packet.addData("password", password);
+        packet.put("username", username);
+        packet.put("password", password);
         Packet response = SocketHandler.getSocketHandler().sendPacketAndGetResponse(packet);
         if (response.status != 201)
             throw response.getObject("validation", ValidationException.class);

@@ -21,7 +21,7 @@ public class Auth extends Middleware {
         if (req.hasKey("auth-token")) {
             String token = req.getOrNull("auth-token");
             if (authTokens.containsKey(token))
-                req.addData("user-id", String.valueOf(authTokens.get(token)));
+                req.put("user-id", String.valueOf(authTokens.get(token)));
         }
         return next();
     }

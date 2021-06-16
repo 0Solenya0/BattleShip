@@ -4,17 +4,25 @@ import java.util.Random;
 
 public class BoardBuilder {
     private static int SIZE = 10; // TO DO get from server.config
+    private static short[] dx = new short[]{0, 0, -1, -1, -1, 1, 1, 1};
+    private static short[] dy = new short[]{1, -1, -1, 0, 1, -1, 0, 1};
     private short[][] board = new short[SIZE][SIZE];
 
     public BoardBuilder() {
     }
 
+    public void clear() {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                board[i][j] = 0;
+    }
+
     public BoardBuilder randomBoat(int len, int val) {
-        while (true) {
+        while(true) {
             Random random = new Random();
-            int r = random.nextInt(10);
-            int c = random.nextInt(10);
             boolean rev = random.nextBoolean();
+            int r = random.nextInt(SIZE);
+            int c = random.nextInt(SIZE);
             if (canAdd(r, c, len, rev)) {
                 addBoat(r, c, len, rev, (short) val);
                 break;
@@ -32,14 +40,29 @@ public class BoardBuilder {
         }
     }
 
+    boolean isValid(int r, int c) {
+        return c >= 0 && r >= 0 && r < SIZE && c < SIZE;
+    }
+
+    boolean checkCell(int r, int c) {
+        if (!isValid(r, c) || board[r][c] != 0)
+            return false;
+        for (int i = 0; i < dx.length; i++) {
+            int x = r + dx[i], y = c + dy[i];
+            if (isValid(x, y) && board[x][y] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean canAdd(int r, int c, int len, boolean rev) {
-        // TO DO check no adjacent cell to have boat
         if ((!rev && r + len >= SIZE) || (rev && c + len >= SIZE))
             return false;
         for (int i = 0; i < len; i++) {
-            if (!rev && board[r + i][c] != 0)
+            if (!rev && !checkCell(r + i, c))
                 return false;
-            if (rev && board[r][c + i] != 0)
+            if (rev && !checkCell(r, c + i))
                 return false;
         }
         return true;
@@ -47,5 +70,13 @@ public class BoardBuilder {
 
     public short[][] getBoard() {
         return board;
+    }
+
+    public void printBoard() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++)
+                System.out.print(board[i][j] + " ");
+            System.out.println();
+        }
     }
 }

@@ -20,9 +20,9 @@ public class LoginController extends Controller {
         User user = context.users.getFirst(u -> u.getUsername().equals(username));
         if (user != null && user.checkPassword(password)) {
             Auth.addToken("123", user.id);
-            return response.addData("auth-token", "123")
-                    .addData("user-id", String.valueOf(user.id)); // TO DO Handle AuthToken
+            return response.put("auth-token", "123")
+                    .put("user-id", String.valueOf(user.id)); // TO DO Handle AuthToken
         }
-        return response.addData("error", "Username or password is wrong!");
+        return response.put("error", "Username or password is wrong!");
     }
 }
