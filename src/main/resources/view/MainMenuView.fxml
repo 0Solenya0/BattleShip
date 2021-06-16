@@ -31,7 +31,7 @@
             <Font name="Gargi" size="13.0" />
          </font>
          <graphic>
-            <Label styleClass="icon" text="C" />
+            <Label styleClass="icon" text="b" />
          </graphic>
       </Button>
    </children>
