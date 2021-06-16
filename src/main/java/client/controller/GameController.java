@@ -12,15 +12,15 @@ public class GameController {
     public final ObservableField<Integer> playerNumber, turn;
     public final ObservableField<String> p1Name, p2Name;
     private ArrayList<ObservableField<Short>> boards;
-    private final Runnable onStartListener;
+    public final ObservableField<Boolean> started;
 
-    public GameController(Runnable onStartListener) {
+    public GameController() {
         playerNumber = new ObservableField<>();
         p1Name = new ObservableField<>();
         p2Name = new ObservableField<>();
         turn = new ObservableField<>();
         boards = new ArrayList<>();
-        this.onStartListener = onStartListener;
+        started = new ObservableField<>();
     }
 
     public ObservableField<Short> addBoardObserver(int playerNumber, int row, int col) {

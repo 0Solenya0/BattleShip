@@ -15,7 +15,7 @@ import javafx.scene.shape.Rectangle;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameView implements Initializable {
+public class GameView {
     private static final int BOARD_SIZE = 450, DIM = 10; // TO DO add config
 
     @FXML
@@ -52,7 +52,9 @@ public class GameView implements Initializable {
         System.out.println(gridId + " " + r + " " + col);
     }
 
-    public void startGame() {
+    public void startGame(Boolean start) {
+        if (!start)
+            return;
         for (int k = 0; k < 2; k++) {
             for (int i = 0; i < DIM; i++)
                 for (int j = 0; j < DIM; j++) {
@@ -74,9 +76,9 @@ public class GameView implements Initializable {
         gameController.turn.addObserver(this::updateTurn);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        gameController = new GameController(this::startGame);
+    public void addGameController(GameController gameController) {
+        this.gameController = gameController;
+        gameController.started.addObserver(this::startGame);
     }
 
     public void updateUserLabel(int playerNumber, String username) {
