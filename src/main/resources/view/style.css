@@ -6,12 +6,25 @@
 }
 
 .anchor {
+    -fx-background-image: url('images/sea1.png');
+}
+
+.game_anchor {
     -fx-background-image: url('images/sea.png');
 }
 
 .icon {
     -fx-font-family: 'Pixel Icons Compilation';
     -fx-text-fill: rgb(256, 256, 256);
+}
+
+.head {
+    -fx-font-family: 'typecast';
+    -fx-font-size: 60;
+}
+
+.board {
+    -fx-background-image: url('images/water.jpg');
 }
 
 .menu_btn {
@@ -23,7 +36,24 @@
     -fx-background-insets: 0;
 }
 
+.player_name {
+    -fx-font-size: 50;
+    -fx-font-family: 'typecast';
+}
+
 .menu_btn:pressed:hover {
     -fx-scale-y: 0.9;
     -fx-scale-x: 0.9;
+}
+
+.active_icon {
+    -fx-font-size: 50;
+    -fx-font-family: 'Pixel Icons Compilation';
+    -fx-text-fill: green;
+}
+
+.deactive_icon {
+    -fx-font-size: 50;
+    -fx-font-family: 'Pixel Icons Compilation';
+    -fx-text-fill: red;
 }
