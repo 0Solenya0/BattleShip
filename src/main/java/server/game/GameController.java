@@ -76,6 +76,9 @@ public class GameController extends Controller {
                     .randomBoat(1, 8)
                     .randomBoat(1, 9)
                     .randomBoat(1, 10);
+            // player timeout
+            if (time.get() < 3000)
+                break;
             Packet packet = new Packet("new-board");
             packet.addObject("board", builder.getBoard());
 
