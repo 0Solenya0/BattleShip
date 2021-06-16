@@ -1,7 +1,7 @@
-package server.request;
+package shared.request;
 
 import shared.request.Packet;
 
 public interface PacketListener {
-    void listen(Packet packet);
+    void listenPacket(Packet packet);
 }

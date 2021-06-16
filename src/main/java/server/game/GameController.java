@@ -5,12 +5,14 @@ import server.db.Context;
 import server.db.exception.ConnectionException;
 import server.db.exception.ValidationException;
 import server.db.model.GameState;
+import server.middleware.ServerRID;
+import server.util.RidUtilities;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shared.lock.CustomLock;
 import shared.request.Packet;
-import server.request.PacketListener;
+import shared.request.PacketListener;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -20,14 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GameController extends Controller {
-    private static int SET_BOARD_TTL = 30000, REFRESH_BOARD_TTL = 10000;
+    private static final int SET_BOARD_TTL = 30000, REFRESH_BOARD_TTL = 10000;
     private static final Logger logger = LogManager.getLogger(GameController.class);
     private static final ConcurrentHashMap<Integer, GameController> gameControllers = new ConcurrentHashMap<>();
-    private GameState gameState;
-    private Player[] players = new Player[2];
+    private final GameState gameState;
+    private final Player[] players = new Player[2];
     private final ArrayList<SocketHandler> visitors = new ArrayList<>();
-    private AtomicInteger rids = new AtomicInteger();
-    private final ConcurrentHashMap<Integer, PacketListener> ridReq = new ConcurrentHashMap<>();
     Context context = new Context();
 
     public GameController(Player player1, Player player2) {
@@ -41,7 +41,7 @@ public class GameController extends Controller {
             logger.fatal("error while creating an empty server.game state - " + e.getLog());
         }
         Packet packet = new Packet("new-server.game");
-        packet.addObject("gameId", gameState.id);
+        packet.addObject("game-id", gameState.id);
         player1.sendPacket(packet);
         player2.sendPacket(packet);
         gameControllers.put(gameState.id, this);
@@ -49,26 +49,6 @@ public class GameController extends Controller {
         players[1] = player2;
         new Thread(() -> setBoards(player1)).start();
         new Thread(() -> setBoards(player2)).start();
-    }
-
-    public Packet getResponse(Packet req, Player player, boolean wait) throws InterruptedException {
-        AtomicReference<Packet> response = new AtomicReference<>();
-        int rid = rids.addAndGet(1);
-        req.addData("rid", String.valueOf(rid));
-        req.addData("server.game-id", String.valueOf(gameState.id));
-        CustomLock lock = new CustomLock();
-
-        if (wait)
-            lock.lockIntrupted();
-        ridReq.put(rid, (p) -> {
-            response.set(p);
-            if (wait)
-                lock.unlock();
-        });
-        player.sendPacket(req);
-        if (wait)
-            lock.lockIntrupted();
-        return response.get();
     }
 
     public void setBoards(Player player) {
@@ -100,11 +80,11 @@ public class GameController extends Controller {
 
             Packet response = null;
             try {
-                response = getResponse(packet, player, true);
+                response = RidUtilities.sendPacketAndGetResponse(packet, player.getSocketHandler());
             } catch (InterruptedException e) {
                 gameState.setBoard(player.getId(), builder.getBoard());
                 player.setReady(true);
-                logger.info("skipped user response in setting board");
+                logger.info("skipped user response while setting board due timeout");
                 break;
             }
             assert response != null;
@@ -118,21 +98,19 @@ public class GameController extends Controller {
         }
         Packet packet = new Packet("set-board");
         packet.addObject("board", builder.getBoard());
-        try {
-            getResponse(packet, player, false);
-        } catch (InterruptedException ignored) { }
+        player.getSocketHandler().sendPacket(packet);
     }
 
     @Override
     public Packet respond(Packet req) throws ConnectionException {
-        if (req.getOrNull("gameId") == null)
+        if (req.getOrNull("game-id") == null)
             return null;
         try {
-            GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("gameId")));
-            g.ridReq.get(Integer.valueOf(req.getOrNull("rid"))).listen(req);
+            GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("game-id")));
+            // TO DO answer users requests
         }
         catch (Exception e) {
-            logger.info("Invalid server.request was sent to server.game server.controller - " + e.getMessage());
+            logger.info("Invalid request was sent to game controller - " + e.getMessage());
         }
         return null;
     }

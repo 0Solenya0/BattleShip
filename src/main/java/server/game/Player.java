@@ -1,15 +1,15 @@
 package server.game;
 
-import shared.handler.SocketHandler;
+import server.handler.SocketHandler;
 import shared.request.Packet;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Player {
     private SocketHandler socketHandler;
+    private final AtomicBoolean ready;
     private final int userId;
     private int playerNumber;
-    private AtomicBoolean ready;
 
     public Player(SocketHandler socketHandler, int userId) {
         this.socketHandler = socketHandler;
@@ -29,7 +29,7 @@ public class Player {
         return userId;
     }
 
-    public SocketHandler getClient() {
+    public SocketHandler getSocketHandler() {
         return socketHandler;
     }
 
@@ -42,6 +42,6 @@ public class Player {
     }
 
     public void sendPacket(Packet packet) {
-        socketHandler.sendResponse(packet);
+        socketHandler.sendPacket(packet);
     }
 }

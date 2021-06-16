@@ -39,8 +39,17 @@ public class Packet implements Serializable {
         return this;
     }
 
+    public Packet addData(String key, int value) {
+        data.put(key, String.valueOf(value));
+        return this;
+    }
+
     public boolean hasKey(String key) {
         return data.containsKey(key);
+    }
+
+    public int getInt(String key) {
+        return Integer.parseInt(data.get(key));
     }
 
     public <T> Packet addObject(String key, T obj) {

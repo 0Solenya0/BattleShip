@@ -1,7 +1,7 @@
 package client.controller;
 
 import client.db.UserData;
-import client.request.PacketSender;
+import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
 import client.request.exception.ResponseException;
 import client.request.exception.ValidationException;
@@ -12,7 +12,7 @@ public class AuthenticationController {
         Packet packet = new Packet("login");
         packet.addData("username", username);
         packet.addData("password", password);
-        Packet response = PacketSender.sendPacket(packet);
+        Packet response = SocketHandler.getSocketHandler().sendPacket(packet);
         String authToken = response.getOrNull("auth-token");
         if (authToken == null)
             throw new ResponseException(response.getOrNull("error"));
@@ -24,7 +24,7 @@ public class AuthenticationController {
         Packet packet = new Packet("register");
         packet.addData("username", username);
         packet.addData("password", password);
-        Packet response = PacketSender.sendPacket(packet);
+        Packet response = SocketHandler.sendPacket(packet);
         if (response.status == 201)
             success.run();
         else

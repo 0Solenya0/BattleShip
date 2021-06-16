@@ -1,6 +1,6 @@
 package server.game;
 
-import shared.handler.SocketHandler;
+import server.handler.SocketHandler;
 import shared.lock.CustomLock;
 
 import java.util.LinkedList;
@@ -46,7 +46,7 @@ public class PlayerPool {
     public void removePlayer(SocketHandler socketHandler) {
         lock.lock();
         for (Player player: players)
-            if (player.getClient().equals(socketHandler)) {
+            if (player.getSocketHandler().equals(socketHandler)) {
                 players.remove(player);
                 System.out.println("removed player from pool");
                 break;
