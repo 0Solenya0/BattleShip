@@ -1,19 +1,21 @@
 package server.game;
 
 import server.handler.SocketHandler;
+import shared.event.ObservableField;
 import shared.request.Packet;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Player {
     private SocketHandler socketHandler;
-    private final AtomicBoolean ready;
+    private final ObservableField<Boolean> ready;
     private final int userId;
     private int playerNumber;
 
     public Player(SocketHandler socketHandler, int userId) {
         this.socketHandler = socketHandler;
-        ready = new AtomicBoolean();
+        ready = new ObservableField<>();
+        ready.set(false);
         this.userId = userId;
     }
 

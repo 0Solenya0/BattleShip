@@ -1,12 +1,10 @@
 package client.controller;
 
-import client.event.ObservableField;
+import shared.event.ObservableField;
 import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
-import client.view.GameView;
 import shared.request.Packet;
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
