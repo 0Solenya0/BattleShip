@@ -5,38 +5,30 @@ import server.db.Context;
 import server.db.exception.ConnectionException;
 import server.db.exception.ValidationException;
 import server.db.model.GameState;
-import server.middleware.ServerRID;
 import server.util.RidUtilities;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shared.lock.CustomLock;
 import shared.request.Packet;
-import shared.request.PacketListener;
 import shared.request.StatusCode;
 
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GameController extends Controller {
-    private static final int SET_BOARD_TTL = 30000, REFRESH_BOARD_TTL = 10000;
+    private static final int SET_BOARD_TTL = 30000, REFRESH_BOARD_TTL = 10000, TURN_TTL = 25000;
     private static final Logger logger = LogManager.getLogger(GameController.class);
     private static final ConcurrentHashMap<Integer, GameController> gameControllers = new ConcurrentHashMap<>();
     private final GameState gameState;
     private final Player[] players = new Player[2];
     private final ArrayList<SocketHandler> visitors = new ArrayList<>(); // TO DO make observer class
-    Context context = new Context();
-
-    public GameController() {
-        // Only for router
-    }
+    private final Context context = new Context();
+    private Timer turnTimer = new Timer();
+    private LocalTime turnStart;
 
     public GameController(Player player1, Player player2) {
         System.out.println("New game is getting created!!!! - users: " + player1.getId() + ' ' + player2.getId());
@@ -139,23 +131,60 @@ public class GameController extends Controller {
         return null;
     }
 
-    public void sendState(Player player) {
-        Packet packet = new Packet("game-round");
+    public void sendGameStateToPlayer(Player player) {
+        Packet packet = new Packet("game-data");
         packet.addObject("board-p1", getGameBoardByUser(player.getId()));
         packet.addObject("board-p2", getGameBoardByUser(player.getId()));
-        packet.addObject("turn", gameState.getTurn());
+        packet.put("turn", gameState.getTurn());
+        packet.addObject("timeout", turnStart.plusNanos(TURN_TTL * 1000000L));
         player.getSocketHandler().sendPacket(packet);
+    }
+
+    public void sendEndTurnToAll() {
+        Packet packet = new Packet("end-turn");
+        players[0].getSocketHandler().sendPacket(packet);
+        players[1].getSocketHandler().sendPacket(packet);
     }
 
     public void startGame(Boolean tmp) {
         if (!players[0].getReady().get() || !players[1].getReady().get())
             return;
-        sendState(players[0]);
-        sendState(players[1]);
+        startNewTurn();
+    }
+
+    public synchronized void startNewTurn() {
+        sendGameStateToPlayer(players[0]);
+        sendGameStateToPlayer(players[1]);
+        turnTimer.cancel();
+        turnTimer.purge();
+        turnTimer = new Timer();
+        gameState.nextTurn();
+        // TO DO save game state
+        int curTurn = gameState.getTurn();
+        turnStart = LocalTime.now();
+        turnTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (gameState.getTurn() == curTurn) {
+                    sendEndTurnToAll();
+                    startNewTurn();
+                }
+            }
+        }, TURN_TTL);
     }
 
     public void playTurn(Packet req, Player player) {
+        if (gameState.getTurn() != req.getInt("turn")
+                || req.getInt("turn") % 2 != player.getPlayerNumber())
+            return;
+        int row = req.getInt("row"), col = req.getInt("col");
+        gameState.getBoard(1 - player.getPlayerNumber()).bomb(row, col);
+        // TO DO save game state
+        startNewTurn();
+    }
 
+    public void answerObserver(Packet packet) {
+        // TO DO
     }
 
     public static Packet respond(Packet req) throws ConnectionException {
@@ -163,7 +192,12 @@ public class GameController extends Controller {
             return new Packet(StatusCode.NOT_FOUND);
         try {
             GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("game-id")));
-            // TO DO answer users requests
+            if (req.getInt("handler") == g.players[0].getSocketHandler().getId())
+                g.playTurn(req, g.players[0]);
+            else if (req.getInt("handler") == g.players[1].getSocketHandler().getId())
+                g.playTurn(req, g.players[1]);
+            else
+                g.answerObserver(req);
         }
         catch (Exception e) {
             logger.info("Invalid request was sent to game controller - " + e.getMessage());

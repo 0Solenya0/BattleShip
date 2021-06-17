@@ -2,13 +2,13 @@ package server.db.model;
 
 import java.time.LocalDateTime;
 
-public abstract class Model {
+public abstract class DBModel {
     public int id;
     public boolean isDeleted;
     public LocalDateTime createdAt;
     public LocalDateTime lastModified;
 
-    public Model() {
+    public DBModel() {
         isDeleted = false;
     }
 

@@ -1,42 +1,44 @@
 package server.db.model;
 
-public class GameState extends Model {
-    private short[][][] boards = new short[2][10][10];
-    private int player1Id, player2Id, turn;
+import shared.model.Board;
 
-    public void setCell(int playerNumber, int x, int y, short state) {
-        boards[playerNumber][x][y] = state;
-    }
+public class GameState extends DBModel {
+    private Board[] boards = new Board[2];
+    private int player1Id, player2Id, turn = -1;
 
-    public short getCell(int playerNumber, int x, int y) {
-        return boards[playerNumber][x][y];
-    }
-
-    public int getPlayer1Id() {
+    public synchronized int getPlayer1Id() {
         return player1Id;
     }
 
-    public void setPlayer1Id(int player1Id) {
+    public synchronized void setPlayer1Id(int player1Id) {
         this.player1Id = player1Id;
     }
 
-    public int getPlayer2Id() {
+    public synchronized int getPlayer2Id() {
         return player2Id;
     }
 
-    public void setPlayer2Id(int player2Id) {
+    public synchronized void setPlayer2Id(int player2Id) {
         this.player2Id = player2Id;
     }
 
-    public short[][][] getBoards() {
+    public synchronized Board[] getBoards() {
         return boards;
     }
 
-    public int getTurn() {
+    public synchronized void nextTurn() {
+        turn++;
+    }
+
+    public synchronized int getTurn() {
         return turn;
     }
 
-    public void setBoard(int plId, short[][] board) {
+    public synchronized void setBoard(int plId, Board board) {
         this.boards[plId] = board;
+    }
+
+    public synchronized Board getBoard(int playerNumber) {
+        return boards[playerNumber];
     }
 }

@@ -1,5 +1,7 @@
 package server.game;
 
+import shared.model.Board;
+
 import java.util.Random;
 
 public class BoardBuilder {
@@ -68,8 +70,8 @@ public class BoardBuilder {
         return true;
     }
 
-    public short[][] getBoard() {
-        return board;
+    public Board getBoard() {
+        return new Board(board);
     }
 
     public void printBoard() {

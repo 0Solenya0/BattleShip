@@ -3,6 +3,7 @@ package client.controller;
 import shared.event.ObservableField;
 import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
+import shared.model.Board;
 import shared.request.Packet;
 
 import java.time.LocalTime;
@@ -14,7 +15,7 @@ public class GameController {
     private int gameId;
     public final ObservableField<Integer> playerNumber, turn;
     public final ObservableField<String> p1Name, p2Name;
-    private ArrayList<ObservableField<Short>> boards;
+    private ArrayList<ObservableField<Board.Cell>> boards;
     public ObservableField<Integer> refreshBoard;
     public final ObservableField<Boolean> started, finalBoard;
     public final ObservableField<LocalTime> timeout;
@@ -60,17 +61,17 @@ public class GameController {
     }
 
     public void getNewBoard(Packet packet) {
-        short[][] board = packet.getObject("board", short[][].class);
+        Board board = packet.getObject("board", Board.class);
         timeout.set(packet.getObject("timeout", LocalTime.class));
         System.out.println(timeout.get());
         boardRid = packet.getInt("rid");
         setBoard(board);
     }
 
-    public void setBoard(short[][] board) {
+    public void setBoard(Board board) {
         for (int i = 0; i < BOARD_SIZE; i++)
             for (int j = 0; j < BOARD_SIZE; j++)
-                setBoardCell(playerNumber.get(), i, j, board[i][j]);
+                setBoardCell(playerNumber.get(), i, j, board.getCell(i, j));
     }
 
     public void acceptBoard() {
@@ -89,11 +90,11 @@ public class GameController {
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
     }
 
-    private void setBoardCell(int playerNumber, int row, int col, short value) {
+    private void setBoardCell(int playerNumber, int row, int col, Board.Cell value) {
         boards.get(playerNumber * BOARD_SIZE * BOARD_SIZE + row * BOARD_SIZE + col).set(value);
     }
 
-    public ObservableField<Short> getBoardCell(int playerNumber, int row, int col) {
+    public ObservableField<Board.Cell> getBoardCell(int playerNumber, int row, int col) {
         return boards.get(playerNumber * BOARD_SIZE * BOARD_SIZE + row * BOARD_SIZE + col);
     }
 }

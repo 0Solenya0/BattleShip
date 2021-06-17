@@ -26,6 +26,10 @@ public class SocketHandler extends shared.handler.SocketHandler {
         return clientMap.get(id);
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void listenPacket(Packet packet) {
         packet.put("handler", String.valueOf(id));
         RequestHandler requestHandler = new RequestHandler(packet);

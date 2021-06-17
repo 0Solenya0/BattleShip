@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import shared.model.Board;
 
 import java.net.URL;
 import java.time.Duration;
@@ -99,12 +100,12 @@ public class GameView implements Initializable {
             });
             gameController.turn.addObserver(this::updateTurn);
             gameController.refreshBoard.addObserver(this::updateBtn);
-            gameController.timeout.addObserver(this::updateHead);
+            gameController.timeout.addObserver(this::updateTimer);
         });
     }
 
     Timer timer = new Timer();
-    private void updateHead(LocalTime localTime) {
+    private void updateTimer(LocalTime localTime) {
         timer.purge();
         timer.cancel();
         timer = new Timer();
@@ -137,13 +138,23 @@ public class GameView implements Initializable {
         });
     }
 
-    public void updateCell(short value, StackPane pane) {
+    public void updateCell(Board.Cell value, StackPane pane) {
         Platform.runLater(() -> {
             Rectangle tile = (Rectangle) pane.getChildren().get(0);
-            if (value > 0)
-                tile.setFill(Color.RED);
-            else
-                tile.setFill(Color.TRANSPARENT);
+            switch (value) {
+                case SHIP -> {
+                    tile.setFill(Color.RED);
+                }
+                case HIT -> {
+                    tile.setFill(Color.BLACK);
+                }
+                case MISS -> {
+                    tile.setFill(Color.YELLOW);
+                }
+                case EMPTY -> {
+                    tile.setFill(Color.TRANSPARENT);
+                }
+            }
         });
     }
 

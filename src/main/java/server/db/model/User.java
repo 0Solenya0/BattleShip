@@ -4,7 +4,7 @@ import server.db.annotation.Unique;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class User extends Model {
+public class User extends DBModel {
     private static final Logger logger = LogManager.getLogger(User.class);
 
     @Unique
