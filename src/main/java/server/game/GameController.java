@@ -43,6 +43,8 @@ public class GameController extends Controller {
         }
         Packet packet = new Packet("new-game");
         packet.addObject("game-id", gameState.id);
+        packet.put("username-p1", player1.getUser().getUsername());
+        packet.put("username-p2", player2.getUser().getUsername());
         packet.put("player-id", 0);
         player1.sendPacket(packet);
         packet.put("player-id", 1);

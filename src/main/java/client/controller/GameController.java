@@ -46,6 +46,8 @@ public class GameController {
     public void setupGame(Packet packet) {
         gameId = packet.getInt("game-id");
         playerNumber.set(packet.getInt("player-id"));
+        p1Name.set(packet.getOrNull("username-p1"));
+        p2Name.set(packet.getOrNull("username-p2"));
         started.set(true);
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())
                 .addTargetListener("new-board", this::getNewBoard);

@@ -1,5 +1,8 @@
 package server.game;
 
+import server.db.Context;
+import server.db.exception.ConnectionException;
+import server.db.model.User;
 import server.handler.SocketHandler;
 import shared.event.ObservableField;
 import shared.request.Packet;
@@ -11,12 +14,23 @@ public class Player {
     private final ObservableField<Boolean> ready;
     private final int userId;
     private int playerNumber;
+    private Context context = new Context();
 
     public Player(SocketHandler socketHandler, int userId) {
         this.socketHandler = socketHandler;
         ready = new ObservableField<>();
         ready.set(false);
         this.userId = userId;
+    }
+
+    public User getUser() {
+        try {
+            return context.users.get(userId);
+        } catch (ConnectionException e) {
+            System.out.println("couldn't get username - " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int getPlayerNumber() {
