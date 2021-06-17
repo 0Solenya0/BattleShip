@@ -5,6 +5,7 @@ import server.db.Context;
 import server.db.exception.ConnectionException;
 import server.db.exception.ValidationException;
 import server.db.model.GameState;
+import server.db.model.User;
 import server.util.RidUtilities;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
@@ -191,6 +192,12 @@ public class GameController extends Controller {
         players[1].getSocketHandler().sendPacket(packet);
         try {
             context.gameStates.save(gameState);
+            User user = context.users.get(players[winner].getId());
+            user.addWin();
+            context.users.save(user);
+            user = context.users.get(players[1 - winner].getId());
+            user.addLoss();
+            context.users.save(user);
         } catch (ConnectionException e) {
             logger.error("couldn't connect to database");
         } catch (ValidationException e) {

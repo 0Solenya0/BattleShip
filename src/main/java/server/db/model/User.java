@@ -10,10 +10,27 @@ public class User extends DBModel {
     @Unique
     private String username;
     private String password;
+    private int wins, loses;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public void addWin() {
+        wins++;
+    }
+
+    public void addLoss() {
+        loses++;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public int getLoses() {
+        return loses;
     }
 
     public String getUsername() {
