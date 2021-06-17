@@ -11,7 +11,7 @@ import shared.request.Packet;
 import shared.request.StatusCode;
 
 public class RegistrationController extends Controller {
-    private static final Logger logger = LogManager.getLogger(DBSet.class);
+    private static final Logger logger = LogManager.getLogger(RegistrationController.class);
     private static Context context = new Context();
 
     public static Packet respond(Packet req) throws ConnectionException {

@@ -1,9 +1,6 @@
 package server.config;
 
-import server.controller.Controller;
-import server.controller.LoginController;
-import server.controller.PlayerPoolController;
-import server.controller.RegistrationController;
+import server.controller.*;
 import server.game.GameController;
 
 import java.util.ArrayList;
@@ -13,6 +10,8 @@ public class RouterConfig {
     private static ArrayList<Route> routes = new ArrayList<>();
 
     public static void initiate() {
+        routes.add(new Route("score-board", ScoreBoardController.class));
+        routes.add(new Route("user-profile", UserProfileController.class));
         routes.add(new Route("login", LoginController.class));
         routes.add(new Route("register", RegistrationController.class));
         routes.add(new Route("pool", PlayerPoolController.class));

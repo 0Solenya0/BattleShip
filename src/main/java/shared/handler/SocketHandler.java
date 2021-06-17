@@ -34,7 +34,7 @@ public abstract class SocketHandler implements PacketListener {
         clientThread.start();
     }
 
-    public void addListener(Runnable listener) {
+    public void addDisconnectListener(Runnable listener) {
         listeners.add(listener);
     }
 
@@ -51,6 +51,7 @@ public abstract class SocketHandler implements PacketListener {
             catch (Exception e) {
                 logger.error("invalid request was made -" + e.getMessage());
                 e.printStackTrace();
+                break;
             }
         }
         for (Runnable listener: listeners) {

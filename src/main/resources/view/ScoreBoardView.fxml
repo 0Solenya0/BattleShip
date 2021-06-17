@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="651.0" prefWidth="1228.0" styleClass="scoreboard_anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ScoreBoardView">
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
+   <children>
+      <ScrollPane hbarPolicy="NEVER" layoutX="412.0" layoutY="62.0" prefHeight="468.0" prefWidth="405.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="400.0">
+               <children>
+                  <VBox fx:id="vboxPlayers" prefWidth="400.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

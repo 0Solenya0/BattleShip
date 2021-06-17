@@ -2,14 +2,17 @@ package shared.request;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import shared.gsonAdapter.LocalDateAdapter;
 import shared.gsonAdapter.LocalDateTimeAdapter;
 import shared.gsonAdapter.LocalTimeAdapter;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Packet implements Serializable {
@@ -47,12 +50,21 @@ public class Packet implements Serializable {
         return this;
     }
 
+    public Packet put(String key, Boolean value) {
+        data.put(key, String.valueOf(value));
+        return this;
+    }
+
     public boolean hasKey(String key) {
         return data.containsKey(key);
     }
 
     public int getInt(String key) {
         return Integer.parseInt(data.get(key));
+    }
+
+    public boolean getBool(String key) {
+        return Boolean.parseBoolean(data.get(key));
     }
 
     public <T> Packet addObject(String key, T obj) {
@@ -62,6 +74,10 @@ public class Packet implements Serializable {
 
     public <T> T getObject(String key, Class<T> objClass) {
         return gson.fromJson(data.get(key), objClass);
+    }
+
+    public <T> T getObject(String key, Type type) {
+        return gson.fromJson(data.get(key), type);
     }
 
     public String getJson() {

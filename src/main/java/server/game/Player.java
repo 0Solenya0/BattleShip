@@ -66,6 +66,6 @@ public class Player {
     }
 
     public void addOnDisconnectListener(Runnable runnable) {
-        socketHandler.addListener(runnable);
+        socketHandler.addDisconnectListener(runnable);
     }
 }

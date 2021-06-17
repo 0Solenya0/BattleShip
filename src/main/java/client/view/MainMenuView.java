@@ -32,11 +32,10 @@ public class MainMenuView extends AbstractView {
 
     @FXML
     void btnProfileClicked(ActionEvent event) {
-
     }
 
     @FXML
     void btnScoreboardClicked(ActionEvent event) {
-
+        ViewManager.goToScoreBoard();
     }
 }

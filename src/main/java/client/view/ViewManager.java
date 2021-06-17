@@ -59,6 +59,12 @@ public class ViewManager extends Application {
         loadPage(fxmlLoader);
     }
 
+    public static void goToScoreBoard() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("SCORE_BOARD_VIEW"))));
+        loadPage(fxmlLoader);
+    }
+
     public static void setScene(Scene scene) {
         window.setScene(scene);
         window.show();

@@ -9,7 +9,22 @@
     -fx-background-image: url('images/sea1.png');
 }
 
+.scroll-pane .viewport {
+       -fx-background-color: transparent;
+}
+
+.scroll-pane{
+   -fx-background-color:transparent;
+}
+
+
 .game_anchor {
+    -fx-background-position: center;
+    -fx-background-image: url('images/game_sea.jpg');
+}
+
+.scoreboard_anchor {
+    -fx-background-position: center;
     -fx-background-image: url('images/sea.png');
 }
 
@@ -33,6 +48,10 @@
 
 .board {
     -fx-background-image: url('images/water.jpg');
+}
+
+.typecast {
+    -fx-font-family: 'typecast';
 }
 
 .menu_btn {
@@ -73,4 +92,16 @@
 .accept_btn:pressed:hover {
     -fx-scale-y: 0.9;
     -fx-scale-x: 0.9;
+}
+
+.user_card_anchor {
+    -fx-background-color: rgb(10, 10, 10);
+}
+
+.online_user {
+    -fx-text-fill: green;
+}
+
+.offline_user {
+    -fx-text-fill: red;
 }
