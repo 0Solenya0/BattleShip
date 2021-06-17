@@ -1,15 +1,15 @@
 package server.db.model;
 
 public class GameState extends Model {
-    private short[][][] board = new short[2][10][10];
-    private int player1Id, player2Id;
+    private short[][][] boards = new short[2][10][10];
+    private int player1Id, player2Id, turn;
 
     public void setCell(int playerNumber, int x, int y, short state) {
-        board[playerNumber][x][y] = state;
+        boards[playerNumber][x][y] = state;
     }
 
     public short getCell(int playerNumber, int x, int y) {
-        return board[playerNumber][x][y];
+        return boards[playerNumber][x][y];
     }
 
     public int getPlayer1Id() {
@@ -28,7 +28,15 @@ public class GameState extends Model {
         this.player2Id = player2Id;
     }
 
+    public short[][][] getBoards() {
+        return boards;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
     public void setBoard(int plId, short[][] board) {
-        this.board[plId] = board;
+        this.boards[plId] = board;
     }
 }

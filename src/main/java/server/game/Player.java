@@ -43,6 +43,10 @@ public class Player {
         ready.set(value);
     }
 
+    public ObservableField<Boolean> getReady() {
+        return ready;
+    }
+
     public void sendPacket(Packet packet) {
         socketHandler.sendPacket(packet);
     }

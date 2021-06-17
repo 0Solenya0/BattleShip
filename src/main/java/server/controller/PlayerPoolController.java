@@ -7,8 +7,7 @@ import shared.request.Packet;
 import shared.request.StatusCode;
 
 public class PlayerPoolController extends Controller {
-    @Override
-    public Packet respond(Packet req) throws ConnectionException {
+    public static Packet respond(Packet req) throws ConnectionException {
         int clientId = Integer.parseInt(req.getOrNull("handler"));
         SocketHandler socketHandler = SocketHandler.getSocketHandler(clientId);
         if (!req.hasKey("user-id"))

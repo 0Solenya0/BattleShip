@@ -8,10 +8,9 @@ import shared.request.StatusCode;
 import shared.request.Packet;
 
 public class LoginController extends Controller {
-    Context context = new Context();
+    private static Context context = new Context();
 
-    @Override
-    public Packet respond(Packet req) throws ConnectionException {
+    public static Packet respond(Packet req) throws ConnectionException {
         String username = req.getOrNull("username");
         String password = req.getOrNull("password");
         if (username == null || password == null)

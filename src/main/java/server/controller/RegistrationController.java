@@ -12,10 +12,9 @@ import shared.request.StatusCode;
 
 public class RegistrationController extends Controller {
     private static final Logger logger = LogManager.getLogger(DBSet.class);
-    Context context = new Context();
+    private static Context context = new Context();
 
-    @Override
-    public Packet respond(Packet req) throws ConnectionException {
+    public static Packet respond(Packet req) throws ConnectionException {
         String username = req.getOrNull("username");
         String password = req.getOrNull("password");
         Packet response = new Packet(StatusCode.OK);

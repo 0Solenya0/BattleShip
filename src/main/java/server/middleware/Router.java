@@ -9,6 +9,7 @@ import shared.request.Packet;
 import shared.request.StatusCode;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class Router extends Middleware {
     private static final Logger logger = LogManager.getLogger(Router.class);
@@ -21,13 +22,14 @@ public class Router extends Middleware {
         for (RouterConfig.Route route: RouterConfig.getRoutes())
             if (route.isMatched(req.target)) {
                 try {
-                    return route.getTarget().getConstructor().newInstance().respond(req);
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    Method method = route.getTarget().getMethod("respond", Packet.class);
+                    method.invoke(null, req);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     logger.fatal("view doesn't have the intended methods - "
                             + req.target + " - "
                             + e.getMessage());
                     e.printStackTrace();
-                } catch (ConnectionException e) {
+                } catch (Exception e) {
                     logger.error("Connection to database failed");
                     e.printStackTrace();
                     return new Packet(StatusCode.INTERNAL_SERVER_ERROR);

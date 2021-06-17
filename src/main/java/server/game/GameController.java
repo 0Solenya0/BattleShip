@@ -31,8 +31,12 @@ public class GameController extends Controller {
     private static final ConcurrentHashMap<Integer, GameController> gameControllers = new ConcurrentHashMap<>();
     private final GameState gameState;
     private final Player[] players = new Player[2];
-    private final ArrayList<SocketHandler> visitors = new ArrayList<>();
+    private final ArrayList<SocketHandler> visitors = new ArrayList<>(); // TO DO make observer class
     Context context = new Context();
+
+    public GameController() {
+        // Only for router
+    }
 
     public GameController(Player player1, Player player2) {
         System.out.println("New game is getting created!!!! - users: " + player1.getId() + ' ' + player2.getId());
@@ -53,6 +57,8 @@ public class GameController extends Controller {
         gameControllers.put(gameState.id, this);
         players[0] = player1;
         players[1] = player2;
+        player1.getReady().addObserver(this::startGame);
+        player2.getReady().addObserver(this::startGame);
         new Thread(() -> setBoards(player1)).start();
         new Thread(() -> setBoards(player2)).start();
     }
@@ -126,10 +132,33 @@ public class GameController extends Controller {
         Packet packet = new Packet("set-board");
         packet.addObject("board", builder.getBoard());
         player.getSocketHandler().sendPacket(packet);
+        // TO DO save the game state
     }
 
-    @Override
-    public Packet respond(Packet req) throws ConnectionException {
+    public short[][] getGameBoardByUser(int userId) {
+        return null;
+    }
+
+    public void sendState(Player player) {
+        Packet packet = new Packet("game-round");
+        packet.addObject("board-p1", getGameBoardByUser(player.getId()));
+        packet.addObject("board-p2", getGameBoardByUser(player.getId()));
+        packet.addObject("turn", gameState.getTurn());
+        player.getSocketHandler().sendPacket(packet);
+    }
+
+    public void startGame(Boolean tmp) {
+        if (!players[0].getReady().get() || !players[1].getReady().get())
+            return;
+        sendState(players[0]);
+        sendState(players[1]);
+    }
+
+    public void playTurn(Packet req, Player player) {
+
+    }
+
+    public static Packet respond(Packet req) throws ConnectionException {
         if (req.getOrNull("game-id") == null)
             return new Packet(StatusCode.NOT_FOUND);
         try {
