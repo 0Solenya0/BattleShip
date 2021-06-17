@@ -62,7 +62,6 @@ public class GameView implements Initializable {
         System.out.println(gridId + " " + row + " " + col + " cell clicked");
         if (gameController.playerNumber.get() != gridId
                 && gameController.getBoardCell(gridId, row, col).get().equals(Board.Cell.EMPTY)) {
-            System.out.println("accepted click");
             gameController.playTurn(row, col);
         }
     }
@@ -86,7 +85,7 @@ public class GameView implements Initializable {
                         Rectangle tile = new Rectangle(BOARD_SIZE / DIM, BOARD_SIZE / DIM);
                         tile.setFill(Color.TRANSPARENT);
                         StackPane pane = new StackPane(tile);
-                        getGrid(k).add(pane, i, j);
+                        getGrid(k).add(pane, j, i);
                         int ii = i, jj = j, kk = k;
                         tile.setOnMouseClicked((event) -> {
                             cellClicked(kk, ii, jj);
