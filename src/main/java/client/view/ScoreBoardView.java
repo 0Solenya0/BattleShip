@@ -1,6 +1,7 @@
 package client.view;
 
 import client.controller.ScoreBoardController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +18,11 @@ public class ScoreBoardView extends AbstractView implements Initializable {
 
     @FXML
     private VBox vboxPlayers;
+
+    @FXML
+    void btnMainMenuClicked(ActionEvent event) {
+        ViewManager.goToMenu();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
