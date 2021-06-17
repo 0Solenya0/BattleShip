@@ -33,6 +33,11 @@ public class MainMenuView extends AbstractView {
     }
 
     @FXML
+    void btnGameListClicked(ActionEvent event) throws IOException {
+        ViewManager.goToGameList();
+    }
+
+    @FXML
     void btnProfileClicked(ActionEvent event) {
         ViewManager.goToProfile(UserData.getUserId());
     }

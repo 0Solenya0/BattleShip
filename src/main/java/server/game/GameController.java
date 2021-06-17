@@ -7,6 +7,8 @@ import server.db.exception.ValidationException;
 import server.db.model.GameState;
 import server.db.model.User;
 import server.util.RidUtilities;
+import shared.event.ObservableField;
+import shared.game.GameData;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,9 +17,7 @@ import shared.request.Packet;
 import shared.request.StatusCode;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -181,6 +181,7 @@ public class GameController extends Controller {
     }
 
     public void gameOver(int winner) {
+        gameControllers.remove(gameState.id);
         turnTimer.cancel();
         turnTimer.purge();
         gameState.nextRound();
@@ -224,7 +225,34 @@ public class GameController extends Controller {
         // TO DO
     }
 
+    public GameData getGameData() {
+        GameData gameData = new GameData();
+        gameData.gameId = gameState.id;
+        gameData.round = gameState.getRound();
+        gameData.p1Name = players[0].getUser().getUsername();
+        gameData.p2Name = players[1].getUser().getUsername();
+        if (gameState.getRound() != -1) {
+            gameData.p1HitShips = gameState.getBoard(0).getDestroyedShips();
+            gameData.p2HitShips = gameState.getBoard(1).getDestroyedShips();
+            gameData.p1HitTargets = gameState.getBoard(0).getHitTargets();
+            gameData.p2HitTargets = gameState.getBoard(1).getHitTargets();
+        }
+        return gameData;
+    }
+
+    public static Packet activeGameList() {
+        Packet packet = new Packet(StatusCode.OK);
+        HashMap<Integer, GameData> list = new HashMap<>();
+        gameControllers.forEach((id, g) -> {
+            list.put(id, g.getGameData());
+        });
+        packet.addObject("games", list);
+        return packet;
+    }
+
     public static Packet respond(Packet req) throws ConnectionException {
+        if (req.target.equals("game-list"))
+            return activeGameList();
         if (req.getOrNull("game-id") == null)
             return new Packet(StatusCode.NOT_FOUND);
         try {

@@ -35,7 +35,7 @@
                </styleClass></Label>
          </graphic>
       </Button>
-      <Button fx:id="btnProfile" layoutX="509.0" layoutY="366.0" mnemonicParsing="false" onAction="#btnProfileClicked" prefHeight="32.0" prefWidth="186.0" styleClass="menu_btn" text="Profile">
+      <Button fx:id="btnProfile" layoutX="526.0" layoutY="420.0" mnemonicParsing="false" onAction="#btnProfileClicked" prefHeight="44.0" prefWidth="153.0" styleClass="menu_btn" text="Profile">
          <font>
             <Font name="Gargi" size="13.0" />
          </font>
@@ -53,6 +53,19 @@
          </font>
          <graphic>
             <Label text="A">
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="white_text" />
+               </styleClass>
+            </Label>
+         </graphic>
+      </Button>
+      <Button fx:id="btnProfile1" layoutX="526.0" layoutY="362.0" mnemonicParsing="false" onAction="#btnGameListClicked" prefHeight="44.0" prefWidth="153.0" styleClass="menu_btn" text="Game List">
+         <font>
+            <Font name="Gargi" size="13.0" />
+         </font>
+         <graphic>
+            <Label text="j">
                <styleClass>
                   <String fx:value="icon" />
                   <String fx:value="white_text" />

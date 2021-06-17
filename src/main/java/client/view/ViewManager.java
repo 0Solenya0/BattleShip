@@ -73,6 +73,12 @@ public class ViewManager extends Application {
         profileView.setUser(userId);
     }
 
+    public static void goToGameList() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("GAME_LIST_VIEW"))));
+        loadPage(fxmlLoader);
+    }
+
     public static void setScene(Scene scene) {
         window.setScene(scene);
         window.show();

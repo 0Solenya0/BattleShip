@@ -1,7 +1,9 @@
 package shared.game;
 
+import java.util.HashSet;
+
 public class Board {
-    private static final int SIZE = 10; // TO DO add config
+    private static final int SIZE = 10, SHIP_CNT = 10; // TO DO add config
     private static short[] dx = new short[]{0, 0, -1, -1, -1, 1, 1, 1};
     private static short[] dy = new short[]{1, -1, -1, 0, 1, -1, 0, 1};
 
@@ -39,6 +41,24 @@ public class Board {
 
     boolean isValid(int r, int c) {
         return c >= 0 && r >= 0 && r < SIZE && c < SIZE;
+    }
+
+    public synchronized int getDestroyedShips() {
+        HashSet<Short> lives = new HashSet<>();
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (boardShips[i][j] != 0 && board[i][j] == Cell.SHIP)
+                    lives.add(boardShips[i][j]);
+        return SHIP_CNT - lives.size();
+    }
+
+    public synchronized int getHitTargets() {
+        int res = 0;
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (board[i][j] == Cell.HIT)
+                    res++;
+        return res;
     }
 
     private synchronized boolean checkAdjacent(int x, int y, short shipNum) {

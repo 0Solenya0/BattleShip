@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="128.0" prefWidth="420.0" styleClass="user_card_anchor" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.GameCard">
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
+   <children>
+      <Label fx:id="lblHeader" layoutY="8.0" prefHeight="46.0" prefWidth="421.0" style="-fx-font-size: 50; -fx-alignment: center;" text="mani vs mani">
+         <styleClass>
+            <String fx:value="white_text" />
+            <String fx:value="typecast" />
+         </styleClass>
+      </Label>
+      <Label layoutX="65.0" layoutY="48.0" style="-fx-font-size: 30; -fx-text-fill: red;" styleClass="icon" text="A" />
+      <Label fx:id="lblDestroyedP1" layoutX="95.0" layoutY="51.0" style="-fx-text-fill: red; -fx-font-size: 30;" styleClass="typecast" text="0/10" />
+      <Label layoutX="61.0" layoutY="78.0" style="-fx-font-size: 30; -fx-text-fill: red;" styleClass="icon" text="d" />
+      <Label fx:id="lblHitP1" layoutX="95.0" layoutY="81.0" style="-fx-text-fill: red; -fx-font-size: 30;" styleClass="typecast" text="0" />
+      <Label layoutX="335.0" layoutY="50.0" style="-fx-font-size: 30; -fx-text-fill: red;" styleClass="icon" text="A" />
+      <Label fx:id="lblDestroyedP2" layoutX="288.0" layoutY="53.0" style="-fx-text-fill: red; -fx-font-size: 30;" styleClass="typecast" text="0/10" />
+      <Label layoutX="332.0" layoutY="80.0" style="-fx-font-size: 30; -fx-text-fill: red;" styleClass="icon" text="d" />
+      <Label fx:id="lblHitP2" layoutX="314.0" layoutY="83.0" style="-fx-text-fill: red; -fx-font-size: 30;" styleClass="typecast" text="0" />
+      <Label layoutX="202.0" layoutY="67.0" style="-fx-font-size: 30; -fx-text-fill: green;" styleClass="icon" text="O" />
+      <Label fx:id="lblRounds" layoutX="160.0" layoutY="100.0" prefHeight="27.0" prefWidth="106.0" style="-fx-font-size: 30; -fx-text-fill: green; -fx-alignment: center;" styleClass="typecast" text="0" />
+      <Button mnemonicParsing="false" onAction="#cardClicked" prefHeight="128.0" prefWidth="421.0" style="-fx-background-color: transparent;" />
+   </children>
+</AnchorPane>
