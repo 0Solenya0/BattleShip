@@ -13,10 +13,14 @@ public class Auth extends Middleware {
     private static final ConcurrentHashMap<String, Integer> authTokens = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, Integer> currentUsers = new ConcurrentHashMap<>();
 
-    public static String registerUser(int userId) {
+    public static String registerUser(int userId, int hId) {
         SecureRandom secureRandom = new SecureRandom();
         String tokenId = String.valueOf(secureRandom.nextLong());
         authTokens.put(tokenId, userId);
+        currentUsers.put(hId, userId);
+        SocketHandler.getSocketHandler(hId).addDisconnectListener(() -> {
+            removeSocket(hId);
+        });
         return tokenId;
     }
 
@@ -34,15 +38,6 @@ public class Auth extends Middleware {
 
     @Override
     public Packet process() {
-        int hId = req.getInt("handler");
-        if (req.getOrNull("auth-token") != null)
-            currentUsers.put(hId, authTokens.get(req.getOrNull("auth-token")));
-        if (!currentUsers.containsKey(hId)) {
-            SocketHandler.getSocketHandler(hId).addDisconnectListener(() -> {
-                removeSocket(hId);
-            });
-        }
-
         if (req.hasKey("auth-token")) {
             String token = req.getOrNull("auth-token");
             if (authTokens.containsKey(token))

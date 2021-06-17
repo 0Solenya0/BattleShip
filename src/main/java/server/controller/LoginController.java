@@ -17,10 +17,14 @@ public class LoginController extends Controller {
             return new Packet(StatusCode.BAD_REQUEST);
         Packet response = new Packet(StatusCode.OK);
         User user = context.users.getFirst(u -> u.getUsername().equals(username));
-        if (user != null && user.checkPassword(password)) {
-            return response.put("auth-token", Auth.registerUser(user.id))
-                    .put("user-id", user.id); // TO DO Handle AuthToken
+        if (user != null) {
+            if (Auth.isUserOnline(user.id))
+                return new Packet(StatusCode.BAD_REQUEST).put("error", "User is already logged in with another device");
+            if (user.checkPassword(password)) {
+                return response.put("auth-token", Auth.registerUser(user.id, req.getInt("handler")))
+                        .put("user-id", user.id); // TO DO Handle AuthToken
+            }
         }
-        return response.put("error", "Username or password is wrong!");
+        return new Packet(StatusCode.BAD_REQUEST).put("error", "Username or password is wrong!");
     }
 }
