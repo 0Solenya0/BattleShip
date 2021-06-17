@@ -4,7 +4,7 @@ import shared.model.Board;
 
 public class GameState extends DBModel {
     private Board[] boards = new Board[2];
-    private int player1Id, player2Id, turn = -1;
+    private int player1Id, player2Id, round = -1, turn;
 
     public synchronized int getPlayer1Id() {
         return player1Id;
@@ -26,8 +26,16 @@ public class GameState extends DBModel {
         return boards;
     }
 
-    public synchronized void nextTurn() {
-        turn++;
+    public synchronized void nextRound() {
+        round++;
+    }
+
+    public synchronized int getRound() {
+        return round;
+    }
+
+    public synchronized void reverseTurn() {
+        turn = 1 - turn;
     }
 
     public synchronized int getTurn() {

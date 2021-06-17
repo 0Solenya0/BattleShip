@@ -27,11 +27,14 @@ public class Board {
                 this.board[i][j] = board.getCell(i, j);
     }
 
-    public void bomb(int x, int y) {
-        if (getCell(x, y) == Cell.SHIP)
+    public boolean bomb(int x, int y) {
+        if (getCell(x, y) == Cell.SHIP) {
             setCell(x, y, Cell.HIT);
+            return true;
+        }
         else if (getCell(x, y) == Cell.EMPTY)
             setCell(x, y, Cell.MISS);
+        return false;
     }
 
     public void hideShips() {

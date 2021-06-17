@@ -168,12 +168,21 @@ public class GameView implements Initializable {
         });
     }
 
+    private boolean hasStyleClass(ObservableList<String> classes, String target) {
+        for (String s: classes)
+            if (s.equals(target))
+                return true;
+        return false;
+    }
+
     public void updateTurn(int turn) {
         Platform.runLater( () -> {
-            getActivatePlayerLabel(turn % 2).getStyleClass().add("active_icon");
-            getActivatePlayerLabel(1 - turn % 2).getStyleClass().add("deactive_icon");
-            getActivatePlayerLabel(turn % 2).getStyleClass().remove("deactive_icon");
-            getActivatePlayerLabel(1 - turn % 2).getStyleClass().remove("active_icon");
+            if (!hasStyleClass(getActivatePlayerLabel(turn).getStyleClass(), "active_icon")) {
+                getActivatePlayerLabel(turn).getStyleClass().add("active_icon");
+                getActivatePlayerLabel(1 - turn).getStyleClass().add("deactive_icon");
+                getActivatePlayerLabel(turn).getStyleClass().remove("deactive_icon");
+                getActivatePlayerLabel(1 - turn).getStyleClass().remove("active_icon");
+            }
         });
     }
 

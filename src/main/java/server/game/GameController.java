@@ -141,6 +141,7 @@ public class GameController extends Controller {
         packet.addObject("board-p1", getGameBoardByUser(0, userId));
         packet.addObject("board-p2", getGameBoardByUser(1, userId));
         packet.put("turn", gameState.getTurn());
+        packet.put("round", gameState.getRound());
         packet.addObject("timeout", turnStart.plusNanos(TURN_TTL * 1000000L));
         socketHandler.sendPacket(packet);
     }
@@ -158,9 +159,11 @@ public class GameController extends Controller {
     }
 
     public synchronized void startNewTurn() {
-        if (gameState.getTurn() != -1)
+        if (gameState.getRound() != -1) {
             sendEndTurnToAll();
-        gameState.nextTurn();
+            gameState.reverseTurn();
+        }
+        gameState.nextRound();
         turnStart = LocalTime.now();
         sendGameStateToUser(players[0].getId(), players[0].getSocketHandler());
         sendGameStateToUser(players[1].getId(), players[1].getSocketHandler());
@@ -168,23 +171,24 @@ public class GameController extends Controller {
         turnTimer.purge();
         turnTimer = new Timer();
         // TO DO save game state
-        int curTurn = gameState.getTurn();
+        int curRound = gameState.getRound();
         turnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (gameState.getTurn() == curTurn)
+                if (gameState.getRound() == curRound)
                     startNewTurn();
             }
         }, TURN_TTL);
     }
 
     public void playTurn(Packet req, Player player) {
-        if (gameState.getTurn() != req.getInt("turn")
-                || req.getInt("turn") % 2 != player.getPlayerNumber())
+        if (gameState.getRound() != req.getInt("round")
+                || gameState.getTurn() != player.getPlayerNumber())
             return;
         System.out.println("player played turn - " + player.getPlayerNumber());
         int row = req.getInt("row"), col = req.getInt("col");
-        gameState.getBoard(1 - player.getPlayerNumber()).bomb(row, col);
+        if (gameState.getBoard(1 - player.getPlayerNumber()).bomb(row, col))
+            gameState.reverseTurn();
         // TO DO save game state
         startNewTurn();
     }

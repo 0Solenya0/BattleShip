@@ -13,7 +13,7 @@ import java.util.Objects;
 public class GameController {
     private static int BOARD_SIZE = 10; // TO DO add config
     private int gameId;
-    public final ObservableField<Integer> playerNumber, turn;
+    public final ObservableField<Integer> playerNumber, turn, round;
     public final ObservableField<String> p1Name, p2Name;
     private ArrayList<ObservableField<Board.Cell>> boards;
     public ObservableField<Integer> refreshBoard;
@@ -26,6 +26,7 @@ public class GameController {
         p1Name = new ObservableField<>();
         p2Name = new ObservableField<>();
         turn = new ObservableField<>();
+        round = new ObservableField<>();
         boards = new ArrayList<>();
         started = new ObservableField<>();
         started.set(false);
@@ -82,6 +83,7 @@ public class GameController {
         setBoard(0, packet.getObject("board-p1", Board.class));
         setBoard(1, packet.getObject("board-p2", Board.class));
         turn.set(packet.getInt("turn"));
+        round.set(packet.getInt("round"));
         timeout.set(packet.getObject("timeout", LocalTime.class));
     }
 
@@ -104,7 +106,7 @@ public class GameController {
     public void playTurn(int row, int col) {
         Packet packet = new Packet("game-play-turn");
         packet.put("game-id", gameId);
-        packet.put("turn", turn.get());
+        packet.put("round", round.get());
         packet.put("row", row);
         packet.put("col", col);
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
