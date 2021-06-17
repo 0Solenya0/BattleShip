@@ -39,11 +39,7 @@ public class RegistrationView extends AbstractView implements Initializable {
 
     @FXML
     void btnLoginClicked() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("LOGIN_VIEW"))));
-        Pane pane = fxmlLoader.load();
-
-        ViewManager.setScene(new Scene(pane));
+        ViewManager.goToLogin();
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package client.view;
 
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.application.Application;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 public class ViewManager extends Application {
     private static final Logger logger = LogManager.getLogger(ViewManager.class);
-    private final Config config = Config.getConfig("mainConfig");
+    private final static Config config = Config.getConfig("mainConfig");
 
     private static Stage window;
 
@@ -25,11 +26,37 @@ public class ViewManager extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         window = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getResource(config.getProperty("LOGIN_VIEW"))));
-        Pane pane = fxmlLoader.load();
+        goToLogin();
+    }
 
-        setScene(new Scene(pane));
+    public static void loadPage(FXMLLoader fxmlLoader) {
+        try {
+            Pane pane = fxmlLoader.load();
+            Platform.runLater(() -> {
+                setScene(new Scene(pane));
+            });
+        } catch (IOException e) {
+            logger.fatal("Failed to find fxml file - " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void goToMenu() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("MAIN_MENU_VIEW"))));
+        loadPage(fxmlLoader);
+    }
+
+    public static void goToRegister() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("REGISTER_VIEW"))));
+        loadPage(fxmlLoader);
+    }
+
+    public static void goToLogin() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("LOGIN_VIEW"))));
+        loadPage(fxmlLoader);
     }
 
     public static void setScene(Scene scene) {

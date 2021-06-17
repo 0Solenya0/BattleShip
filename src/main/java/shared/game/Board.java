@@ -41,7 +41,7 @@ public class Board {
         return c >= 0 && r >= 0 && r < SIZE && c < SIZE;
     }
 
-    private boolean checkAdjacent(int x, int y, short shipNum) {
+    private synchronized boolean checkAdjacent(int x, int y, short shipNum) {
         for (int i = 0; i < dx.length; i++)
             for (int j = 0; j < dx.length; j++) {
                 if (isValid(x + dx[i], y + dy[j]) &&
@@ -51,7 +51,7 @@ public class Board {
         return false;
     }
 
-    private void bombAdjacent(int x, int y) {
+    private synchronized void bombAdjacent(int x, int y) {
         boolean bomb = true;
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
@@ -65,7 +65,7 @@ public class Board {
         }
     }
 
-    public boolean bomb(int x, int y) {
+    public synchronized boolean bomb(int x, int y) {
         if (getCell(x, y) == Cell.SHIP) {
             setCell(x, y, Cell.HIT);
             bombAdjacent(x, y);
@@ -76,7 +76,15 @@ public class Board {
         return false;
     }
 
-    public void hideShips() {
+    public synchronized boolean isAllHit() {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (board[i][j] == Cell.SHIP)
+                    return false;
+        return true;
+    }
+
+    public synchronized void hideShips() {
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
                 if (board[i][j] == Cell.SHIP)

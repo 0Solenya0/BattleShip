@@ -125,7 +125,6 @@ public class GameController extends Controller {
         packet.addObject("board", builder.getBoard());
         player.getSocketHandler().sendPacket(packet);
         player.setReady(true);
-        // TO DO save the game state
     }
 
     public Board getGameBoardByUser(int playerNumber, int userId) {
@@ -170,7 +169,6 @@ public class GameController extends Controller {
         turnTimer.cancel();
         turnTimer.purge();
         turnTimer = new Timer();
-        // TO DO save game state
         int curRound = gameState.getRound();
         turnTimer.schedule(new TimerTask() {
             @Override
@@ -181,6 +179,25 @@ public class GameController extends Controller {
         }, TURN_TTL);
     }
 
+    public void gameOver(int winner) {
+        turnTimer.cancel();
+        turnTimer.purge();
+        gameState.nextRound();
+        sendGameStateToUser(players[0].getId(), players[0].getSocketHandler());
+        sendGameStateToUser(players[1].getId(), players[1].getSocketHandler());
+        Packet packet = new Packet("game-over");
+        packet.put("winner", winner);
+        players[0].getSocketHandler().sendPacket(packet);
+        players[1].getSocketHandler().sendPacket(packet);
+        try {
+            context.gameStates.save(gameState);
+        } catch (ConnectionException e) {
+            logger.error("couldn't connect to database");
+        } catch (ValidationException e) {
+            logger.fatal("error while creating an empty server.game state - " + e.getLog());
+        }
+    }
+
     public void playTurn(Packet req, Player player) {
         if (gameState.getRound() != req.getInt("round")
                 || gameState.getTurn() != player.getPlayerNumber())
@@ -189,7 +206,10 @@ public class GameController extends Controller {
         int row = req.getInt("row"), col = req.getInt("col");
         if (gameState.getBoard(1 - player.getPlayerNumber()).bomb(row, col))
             gameState.reverseTurn();
-        // TO DO save game state
+        if (gameState.getBoard(1 - player.getPlayerNumber()).isAllHit()) {
+            gameOver(player.getPlayerNumber());
+            return;
+        }
         startNewTurn();
     }
 

@@ -13,11 +13,10 @@ import java.util.Objects;
 public class GameController {
     private static int BOARD_SIZE = 10; // TO DO add config
     private int gameId;
-    public final ObservableField<Integer> playerNumber, turn, round;
+    public final ObservableField<Integer> playerNumber, turn, round, refreshBoard, winner;
     public final ObservableField<String> p1Name, p2Name;
     private ArrayList<ObservableField<Board.Cell>> boards;
-    public ObservableField<Integer> refreshBoard;
-    public final ObservableField<Boolean> started, finalBoard;
+    public final ObservableField<Boolean> started, finalBoard, gameOver;
     public final ObservableField<LocalTime> timeout;
     private int boardRid;
 
@@ -27,6 +26,8 @@ public class GameController {
         p2Name = new ObservableField<>();
         turn = new ObservableField<>();
         round = new ObservableField<>();
+        winner = new ObservableField<>();
+        gameOver = new ObservableField<>();
         boards = new ArrayList<>();
         started = new ObservableField<>();
         started.set(false);
@@ -58,6 +59,13 @@ public class GameController {
                 .addTargetListener("game-data", this::updateState);
         SocketHandler.getSocketHandlerWithoutException()
                 .addTargetListener("end-turn", this::updateTurn);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("game-over", this::gameOver);
+    }
+
+    public void gameOver(Packet packet) {
+        winner.set(packet.getInt("winner"));
+        gameOver.set(true);
     }
 
     public void setFinalBoard(Packet packet) {

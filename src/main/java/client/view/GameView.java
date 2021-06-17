@@ -99,9 +99,31 @@ public class GameView implements Initializable {
             gameController.p2Name.addObserver((s) -> {
                 updateUserLabel(1, s);
             });
+            gameController.gameOver.addObserver(this::gameOver);
             gameController.turn.addObserver(this::updateTurn);
             gameController.refreshBoard.addObserver(this::updateBtn);
             gameController.timeout.addObserver(this::updateTimer);
+        });
+    }
+
+    private void gameOver(Boolean isOver) {
+        if (!isOver)
+            return;
+        Platform.runLater(() -> {
+            timer.cancel();
+            timer.purge();
+            lblTimer.setText("");
+            if (gameController.winner.get() == 0)
+                lblHead.setText(gameController.p1Name.get() + " has won the match!");
+            else
+                lblHead.setText(gameController.p2Name.get() + " has won the match!");
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    ViewManager.goToMenu();
+                }
+            }, 5000);
         });
     }
 
