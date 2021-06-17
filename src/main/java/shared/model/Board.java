@@ -21,11 +21,24 @@ public class Board {
                 board[i][j] = Cell.EMPTY;
     }
 
+    public void copy(Board board) {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                this.board[i][j] = board.getCell(i, j);
+    }
+
     public void bomb(int x, int y) {
         if (getCell(x, y) == Cell.SHIP)
             setCell(x, y, Cell.HIT);
         else if (getCell(x, y) == Cell.EMPTY)
             setCell(x, y, Cell.MISS);
+    }
+
+    public void hideShips() {
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                if (board[i][j] == Cell.SHIP)
+                    board[i][j] = Cell.EMPTY;
     }
 
     public synchronized void setCell(int x, int y, Cell val) {

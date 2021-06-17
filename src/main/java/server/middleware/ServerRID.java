@@ -24,6 +24,7 @@ public class ServerRID extends Middleware {
 
     @Override
     public Packet process() {
+        // TO DO invalid requests
         if (req.hasKey("rid"))
             return ridListeners.get(req.getInt("rid")).listenPacket(req);
         return next();

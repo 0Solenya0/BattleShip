@@ -69,8 +69,8 @@
       <Label fx:id="lblP2" layoutX="679.0" layoutY="68.0" styleClass="player_name" text="P2" />
       <Label fx:id="lblP1" layoutX="89.0" layoutY="68.0" styleClass="player_name" text="P1" />
       <Label fx:id="lblHead" layoutX="11.0" prefHeight="53.0" prefWidth="1207.0" style="-fx-alignment: center;" styleClass="head" text="Label" />
-      <Label fx:id="lblActiveP1" layoutX="45.0" layoutY="64.0" styleClass="active_icon" text="G" />
-      <Label fx:id="lblActiveP2" layoutX="637.0" layoutY="64.0" styleClass="deactive_icon" text="G" />
+      <Label fx:id="lblActiveP2" layoutX="637.0" layoutY="64.0" styleClass="activation_icon" text="G" />
+      <Label fx:id="lblActiveP1" layoutX="45.0" layoutY="64.0" styleClass="activation_icon" text="G" />
       <Button fx:id="btnAccept" layoutX="548.0" layoutY="583.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#btnAcceptClicked" prefHeight="53.0" prefWidth="54.0" text="C">
          <styleClass>
             <String fx:value="icon" />

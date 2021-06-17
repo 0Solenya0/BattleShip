@@ -17,6 +17,11 @@
     -fx-font-family: 'Pixel Icons Compilation';
 }
 
+.activation_icon {
+    -fx-font-size: 50;
+    -fx-font-family: 'Pixel Icons Compilation';
+}
+
 .white_text {
     -fx-text-fill: rgb(256, 256, 256);
 }
@@ -50,14 +55,10 @@
 }
 
 .active_icon {
-    -fx-font-size: 50;
-    -fx-font-family: 'Pixel Icons Compilation';
     -fx-text-fill: green;
 }
 
 .deactive_icon {
-    -fx-font-size: 50;
-    -fx-font-family: 'Pixel Icons Compilation';
     -fx-text-fill: red;
 }
 

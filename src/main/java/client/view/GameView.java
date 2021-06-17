@@ -58,9 +58,13 @@ public class GameView implements Initializable {
         return lblActiveP2;
     }
 
-    public void cellClicked(int gridId, int r, int col) {
-        System.out.println(gridId + " " + r + " " + col);
-        // TO DO clicked
+    public void cellClicked(int gridId, int row, int col) {
+        System.out.println(gridId + " " + row + " " + col + " cell clicked");
+        if (gameController.playerNumber.get() != gridId
+                && gameController.getBoardCell(gridId, row, col).get().equals(Board.Cell.EMPTY)) {
+            System.out.println("accepted click");
+            gameController.playTurn(row, col);
+        }
     }
 
     public void addGameController(GameController gameController) {
@@ -82,7 +86,7 @@ public class GameView implements Initializable {
                         Rectangle tile = new Rectangle(BOARD_SIZE / DIM, BOARD_SIZE / DIM);
                         tile.setFill(Color.TRANSPARENT);
                         StackPane pane = new StackPane(tile);
-                        getGrid(k).add(pane, j, i);
+                        getGrid(k).add(pane, i, j);
                         int ii = i, jj = j, kk = k;
                         tile.setOnMouseClicked((event) -> {
                             cellClicked(kk, ii, jj);
@@ -119,7 +123,8 @@ public class GameView implements Initializable {
                         timer.cancel();
                         timer.purge();
                     }
-                    lblTimer.setText(String.valueOf(s));
+                    else
+                        lblTimer.setText(String.valueOf(s));
                 });
             }
         }, 500, 500);
@@ -167,8 +172,8 @@ public class GameView implements Initializable {
     public void updateTurn(int turn) {
         Platform.runLater( () -> {
             getActivatePlayerLabel(turn % 2).getStyleClass().add("active_icon");
-            getActivatePlayerLabel(turn % 2).getStyleClass().remove("deactive_icon");
             getActivatePlayerLabel(1 - turn % 2).getStyleClass().add("deactive_icon");
+            getActivatePlayerLabel(turn % 2).getStyleClass().remove("deactive_icon");
             getActivatePlayerLabel(1 - turn % 2).getStyleClass().remove("active_icon");
         });
     }

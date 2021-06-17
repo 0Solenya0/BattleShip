@@ -51,10 +51,14 @@ public class GameController {
                 .addTargetListener("new-board", this::getNewBoard);
         SocketHandler.getSocketHandlerWithoutException()
                 .addTargetListener("set-board", this::setFinalBoard);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("game-data", this::updateState);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("end-turn", this::updateTurn);
     }
 
     public void setFinalBoard(Packet packet) {
-        short[][] board = packet.getObject("board", short[][].class);
+        Board board = packet.getObject("board", Board.class);
         finalBoard.set(true);
         refreshBoard.set(-1);
         timeout.set(LocalTime.now());
@@ -63,15 +67,20 @@ public class GameController {
     public void getNewBoard(Packet packet) {
         Board board = packet.getObject("board", Board.class);
         timeout.set(packet.getObject("timeout", LocalTime.class));
-        System.out.println(timeout.get());
+        System.out.println("timeout: " + timeout.get());
         boardRid = packet.getInt("rid");
-        setBoard(board);
+        setBoard(playerNumber.get(), board);
     }
 
-    public void setBoard(Board board) {
-        for (int i = 0; i < BOARD_SIZE; i++)
-            for (int j = 0; j < BOARD_SIZE; j++)
-                setBoardCell(playerNumber.get(), i, j, board.getCell(i, j));
+    private void updateTurn(Packet packet) {
+        // Turn finished sent from server
+    }
+
+    private void updateState(Packet packet) {
+        setBoard(0, packet.getObject("board-p1", Board.class));
+        setBoard(1, packet.getObject("board-p2", Board.class));
+        turn.set(packet.getInt("turn"));
+        timeout.set(packet.getObject("timeout", LocalTime.class));
     }
 
     public void acceptBoard() {
@@ -88,6 +97,21 @@ public class GameController {
         packet.put("rid", boardRid);
         packet.put("accept", "false");
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
+    }
+
+    public void playTurn(int row, int col) {
+        Packet packet = new Packet("game-play-turn");
+        packet.put("game-id", gameId);
+        packet.put("turn", turn.get());
+        packet.put("row", row);
+        packet.put("col", col);
+        Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
+    }
+
+    public void setBoard(int playerNumber, Board board) {
+        for (int i = 0; i < BOARD_SIZE; i++)
+            for (int j = 0; j < BOARD_SIZE; j++)
+                setBoardCell(playerNumber, i, j, board.getCell(i, j));
     }
 
     private void setBoardCell(int playerNumber, int row, int col, Board.Cell value) {

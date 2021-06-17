@@ -94,8 +94,6 @@ public class GameController extends Controller {
                 // player timeout
                 if (time.get() <= 0)
                     break;
-                // DEBUG
-                builder.printBoard();
                 response = RidUtilities.sendPacketAndGetResponse(packet, player.getSocketHandler());
             } catch (InterruptedException e) {
                 System.out.println("automatically set board player timeout");
@@ -120,11 +118,11 @@ public class GameController extends Controller {
         timer.purge();
         timer.cancel();
         gameState.setBoard(player.getPlayerNumber(), builder.getBoard());
-        player.setReady(true);
         System.out.println("final board was sent to player " + player.getPlayerNumber());
         Packet packet = new Packet("set-board");
         packet.addObject("board", builder.getBoard());
         player.getSocketHandler().sendPacket(packet);
+        player.setReady(true);
         // TO DO save the game state
     }
 
@@ -160,15 +158,15 @@ public class GameController extends Controller {
     public synchronized void startNewTurn() {
         if (gameState.getTurn() != -1)
             sendEndTurnToAll();
+        gameState.nextTurn();
+        turnStart = LocalTime.now();
         sendGameStateToUser(players[0].getId(), players[0].getSocketHandler());
         sendGameStateToUser(players[1].getId(), players[1].getSocketHandler());
         turnTimer.cancel();
         turnTimer.purge();
         turnTimer = new Timer();
-        gameState.nextTurn();
         // TO DO save game state
         int curTurn = gameState.getTurn();
-        turnStart = LocalTime.now();
         turnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -182,6 +180,7 @@ public class GameController extends Controller {
         if (gameState.getTurn() != req.getInt("turn")
                 || req.getInt("turn") % 2 != player.getPlayerNumber())
             return;
+        System.out.println("player played turn - " + player.getPlayerNumber());
         int row = req.getInt("row"), col = req.getInt("col");
         gameState.getBoard(1 - player.getPlayerNumber()).bomb(row, col);
         // TO DO save game state
@@ -196,7 +195,7 @@ public class GameController extends Controller {
         if (req.getOrNull("game-id") == null)
             return new Packet(StatusCode.NOT_FOUND);
         try {
-            GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("game-id")));
+            GameController g = gameControllers.get(req.getInt("game-id"));
             if (req.target.equals("game-play-turn")) {
                 if (req.getInt("handler") == g.players[0].getSocketHandler().getId())
                     g.playTurn(req, g.players[0]);
