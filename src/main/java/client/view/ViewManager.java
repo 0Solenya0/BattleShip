@@ -65,6 +65,14 @@ public class ViewManager extends Application {
         loadPage(fxmlLoader);
     }
 
+    public static void goToProfile(int userId) {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Objects.requireNonNull(ViewManager.class.getResource(config.getProperty("PROFILE_VIEW"))));
+        loadPage(fxmlLoader);
+        ProfileView profileView = fxmlLoader.getController();
+        profileView.setUser(userId);
+    }
+
     public static void setScene(Scene scene) {
         window.setScene(scene);
         window.show();

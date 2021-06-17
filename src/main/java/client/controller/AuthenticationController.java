@@ -17,6 +17,7 @@ public class AuthenticationController {
         if (authToken == null)
             throw new ResponseException(response.getOrNull("error"));
         UserData.setAuthToken(authToken);
+        UserData.setUserId(response.getInt("user-id"));
     }
 
     public void register(String username, String password) throws ValidationException, ConnectionException {

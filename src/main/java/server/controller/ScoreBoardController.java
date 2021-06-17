@@ -18,7 +18,7 @@ public class ScoreBoardController extends Controller {
 
     public static Packet respond(Packet req) throws ConnectionException {
         ArrayList<User> users = context.users.getAll(user -> true);
-        users.sort(Comparator.comparingInt(u -> (u.getWins() - u.getLoses())));
+        users.sort(Comparator.comparingInt(u -> (u.getLoses() - u.getWins())));
         ArrayList<Integer> list = new ArrayList<>();
         for (User user: users)
             list.add(user.id);

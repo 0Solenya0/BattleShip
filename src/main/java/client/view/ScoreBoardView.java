@@ -30,7 +30,7 @@ public class ScoreBoardView extends AbstractView implements Initializable {
                 UserCard card = fxmlLoader.getController();
                 card.setUser(id);
                 card.setOnClickListener(() -> {
-                    // TO DO open user profile
+                    ViewManager.goToProfile(id);
                 });
                 vboxPlayers.getChildren().add(pane);
             } catch (IOException e) {
