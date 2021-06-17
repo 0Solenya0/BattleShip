@@ -3,7 +3,7 @@ package client.controller;
 import shared.event.ObservableField;
 import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
-import shared.model.Board;
+import shared.game.Board;
 import shared.request.Packet;
 
 import java.time.LocalTime;

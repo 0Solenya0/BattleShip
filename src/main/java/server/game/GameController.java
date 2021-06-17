@@ -9,7 +9,7 @@ import server.util.RidUtilities;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shared.model.Board;
+import shared.game.Board;
 import shared.request.Packet;
 import shared.request.StatusCode;
 

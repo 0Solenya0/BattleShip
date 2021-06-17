@@ -1,6 +1,6 @@
 package server.db.model;
 
-import shared.model.Board;
+import shared.game.Board;
 
 public class GameState extends DBModel {
     private Board[] boards = new Board[2];

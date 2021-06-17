@@ -1,6 +1,6 @@
 package server.game;
 
-import shared.model.Board;
+import shared.game.Board;
 
 import java.util.Random;
 
