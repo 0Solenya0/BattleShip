@@ -27,7 +27,7 @@ public class ObservableField<T> {
         lock.writeLock().lock();
         this.value = value;
         notifyObservers();
-        lock.writeLock().lock();;
+        lock.writeLock().unlock();
     }
 
     public T get() {
