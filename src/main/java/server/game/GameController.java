@@ -9,6 +9,7 @@ import server.util.RidUtilities;
 import shared.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shared.model.Board;
 import shared.request.Packet;
 import shared.request.StatusCode;
 
@@ -127,17 +128,21 @@ public class GameController extends Controller {
         // TO DO save the game state
     }
 
-    public short[][] getGameBoardByUser(int userId) {
-        return null;
+    public Board getGameBoardByUser(int playerNumber, int userId) {
+        Board board = new Board();
+        board.copy(gameState.getBoard(playerNumber));
+        if (players[playerNumber].getId() != userId)
+            board.hideShips();
+        return board;
     }
 
-    public void sendGameStateToPlayer(Player player) {
+    public void sendGameStateToUser(int userId, SocketHandler socketHandler) {
         Packet packet = new Packet("game-data");
-        packet.addObject("board-p1", getGameBoardByUser(player.getId()));
-        packet.addObject("board-p2", getGameBoardByUser(player.getId()));
+        packet.addObject("board-p1", getGameBoardByUser(0, userId));
+        packet.addObject("board-p2", getGameBoardByUser(1, userId));
         packet.put("turn", gameState.getTurn());
         packet.addObject("timeout", turnStart.plusNanos(TURN_TTL * 1000000L));
-        player.getSocketHandler().sendPacket(packet);
+        socketHandler.sendPacket(packet);
     }
 
     public void sendEndTurnToAll() {
@@ -153,8 +158,10 @@ public class GameController extends Controller {
     }
 
     public synchronized void startNewTurn() {
-        sendGameStateToPlayer(players[0]);
-        sendGameStateToPlayer(players[1]);
+        if (gameState.getTurn() != -1)
+            sendEndTurnToAll();
+        sendGameStateToUser(players[0].getId(), players[0].getSocketHandler());
+        sendGameStateToUser(players[1].getId(), players[1].getSocketHandler());
         turnTimer.cancel();
         turnTimer.purge();
         turnTimer = new Timer();
@@ -165,10 +172,8 @@ public class GameController extends Controller {
         turnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (gameState.getTurn() == curTurn) {
-                    sendEndTurnToAll();
+                if (gameState.getTurn() == curTurn)
                     startNewTurn();
-                }
             }
         }, TURN_TTL);
     }
@@ -192,12 +197,12 @@ public class GameController extends Controller {
             return new Packet(StatusCode.NOT_FOUND);
         try {
             GameController g = gameControllers.get(Integer.valueOf(req.getOrNull("game-id")));
-            if (req.getInt("handler") == g.players[0].getSocketHandler().getId())
-                g.playTurn(req, g.players[0]);
-            else if (req.getInt("handler") == g.players[1].getSocketHandler().getId())
-                g.playTurn(req, g.players[1]);
-            else
-                g.answerObserver(req);
+            if (req.target.equals("game-play-turn")) {
+                if (req.getInt("handler") == g.players[0].getSocketHandler().getId())
+                    g.playTurn(req, g.players[0]);
+                else if (req.getInt("handler") == g.players[1].getSocketHandler().getId())
+                    g.playTurn(req, g.players[1]);
+            }
         }
         catch (Exception e) {
             logger.info("Invalid request was sent to game controller - " + e.getMessage());

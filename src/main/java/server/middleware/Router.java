@@ -23,7 +23,7 @@ public class Router extends Middleware {
             if (route.isMatched(req.target)) {
                 try {
                     Method method = route.getTarget().getMethod("respond", Packet.class);
-                    method.invoke(null, req);
+                    return (Packet) method.invoke(null, req);
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     logger.fatal("view doesn't have the intended methods - "
                             + req.target + " - "

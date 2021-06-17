@@ -3,13 +3,17 @@ package server.middleware;
 import server.handler.RequestHandler;
 import shared.request.Packet;
 
+import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Auth extends Middleware {
-    private static ConcurrentHashMap<String, Integer> authTokens = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Integer> authTokens = new ConcurrentHashMap<>();
 
-    public static void addToken(String tokenId, int userId) {
+    public static String registerUser(int userId) {
+        SecureRandom secureRandom = new SecureRandom();
+        String tokenId = String.valueOf(secureRandom.nextLong());
         authTokens.put(tokenId, userId);
+        return tokenId;
     }
 
     public Auth(Packet req, RequestHandler p) {
