@@ -47,5 +47,18 @@
                </styleClass></Label>
          </graphic>
       </Button>
+      <Button layoutX="14.0" layoutY="611.0" mnemonicParsing="false" onAction="#logoutClicked" prefHeight="44.0" prefWidth="153.0" styleClass="menu_btn" text="Logout">
+         <font>
+            <Font name="Gargi" size="13.0" />
+         </font>
+         <graphic>
+            <Label text="A">
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="white_text" />
+               </styleClass>
+            </Label>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>

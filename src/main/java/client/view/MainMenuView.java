@@ -2,6 +2,7 @@ package client.view;
 
 import client.controller.GameController;
 import client.db.UserData;
+import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,5 +40,13 @@ public class MainMenuView extends AbstractView {
     @FXML
     void btnScoreboardClicked(ActionEvent event) {
         ViewManager.goToScoreBoard();
+    }
+
+    @FXML
+    void logoutClicked(ActionEvent event) {
+        UserData.setUserId(-1);
+        UserData.setAuthToken(null);
+        SocketHandler.killSocket();
+        ViewManager.goToLogin();
     }
 }

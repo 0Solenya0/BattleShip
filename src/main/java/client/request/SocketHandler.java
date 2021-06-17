@@ -37,6 +37,19 @@ public class SocketHandler extends shared.handler.SocketHandler {
         return socketHandler;
     }
 
+    public static void killSocket() {
+        serviceLock.lock();
+        try {
+            socketHandler.socket.close();
+        } catch (IOException e) {
+            System.out.println("failed to close socket");
+            logger.error("failed to close socket");
+            e.printStackTrace();
+        }
+        socketHandler = null;
+        serviceLock.unlock();
+    }
+
     public static SocketHandler getSocketHandlerWithoutException() {
         try {
             return getSocketHandler();
