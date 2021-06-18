@@ -4,6 +4,7 @@ import shared.event.ObservableField;
 import client.request.SocketHandler;
 import client.request.exception.ConnectionException;
 import shared.game.Board;
+import shared.game.GameData;
 import shared.request.Packet;
 
 import java.time.LocalTime;
@@ -18,6 +19,7 @@ public class GameController {
     private ArrayList<ObservableField<Board.Cell>> boards;
     public final ObservableField<Boolean> started, finalBoard, gameOver;
     public final ObservableField<LocalTime> timeout;
+    private boolean observer;
     private int boardRid;
 
     public GameController() {
@@ -37,6 +39,27 @@ public class GameController {
         refreshBoard.set(0);
         for (int i = 0; i < 2 * BOARD_SIZE * BOARD_SIZE; i++)
             boards.add(new ObservableField<>());
+    }
+
+    public void observeGame(int gameId) {
+        observer = true;
+        Packet packet = new Packet("game-data");
+        packet.put("game-id", gameId);
+        Packet res = Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())
+                .sendPacketAndGetResponse(packet);
+        p1Name.set(res.getObject("data", GameData.class).p1Name);
+        p2Name.set(res.getObject("data", GameData.class).p2Name);
+
+        packet = new Packet("game-observe");
+        packet.put("game-id", gameId);
+        Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())
+                .sendPacket(packet);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("game-data", this::updateState);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("end-turn", this::updateTurn);
+        SocketHandler.getSocketHandlerWithoutException()
+                .addTargetListener("game-over", this::gameOver);
     }
 
     public void newGame() throws ConnectionException {
@@ -109,6 +132,10 @@ public class GameController {
         packet.put("rid", boardRid);
         packet.put("accept", "false");
         Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException()).sendPacket(packet);
+    }
+
+    public boolean isObserver() {
+        return observer;
     }
 
     public void playTurn(int row, int col) {

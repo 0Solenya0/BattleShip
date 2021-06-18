@@ -23,6 +23,11 @@ public class GameListController {
         }, 0, 3000);
     }
 
+    public void stopFetch() {
+        timer.cancel();
+        timer.purge();
+    }
+
     private void updateList() {
         Packet packet = new Packet("game-list");
         Packet res = Objects.requireNonNull(SocketHandler.getSocketHandlerWithoutException())

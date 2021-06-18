@@ -27,7 +27,7 @@ public class MainMenuView extends AbstractView {
         GameController g = new GameController();
         g.newGame();
         GameView gameView = fxmlLoader.getController();
-        gameView.addGameController(g);
+        gameView.setGameControllerForPlayer(g);
 
         ViewManager.setScene(new Scene(pane));
     }

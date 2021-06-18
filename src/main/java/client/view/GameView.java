@@ -1,6 +1,7 @@
 package client.view;
 
 import client.controller.GameController;
+import client.controller.GameListController;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,7 +65,35 @@ public class GameView implements Initializable {
         }
     }
 
-    public void addGameController(GameController gameController) {
+    public void setGameControllerForObserver(GameController gameController) {
+        Platform.runLater(() -> {
+            lblHead.setText("waiting for players to set boards...");
+            for (int k = 0; k < 2; k++) {
+                for (int i = 0; i < DIM; i++)
+                    for (int j = 0; j < DIM; j++) {
+                        Rectangle tile = new Rectangle(BOARD_SIZE / DIM, BOARD_SIZE / DIM);
+                        tile.setFill(Color.TRANSPARENT);
+                        StackPane pane = new StackPane(tile);
+                        getGrid(k).add(pane, j, i);
+                        gameController.getBoardCell(k, i, j).addObserver((value -> {
+                            updateCell(value, pane);
+                        }));
+                    }
+            }
+            gameController.p1Name.addObserver((s) -> {
+                updateUserLabel(0, s);
+            });
+            gameController.p2Name.addObserver((s) -> {
+                updateUserLabel(1, s);
+            });
+            gameController.gameOver.addObserver(this::gameOver);
+            gameController.turn.addObserver(this::updateTurn);
+            gameController.round.addObserver(this::updateHead);
+            gameController.timeout.addObserver(this::updateTimer);
+        });
+    }
+
+    public void setGameControllerForPlayer(GameController gameController) {
         this.gameController = gameController;
         System.out.println("added observer");
         gameController.started.addObserver(this::startGame);
@@ -101,8 +130,15 @@ public class GameView implements Initializable {
             });
             gameController.gameOver.addObserver(this::gameOver);
             gameController.turn.addObserver(this::updateTurn);
+            gameController.round.addObserver(this::updateHead);
             gameController.refreshBoard.addObserver(this::updateBtn);
             gameController.timeout.addObserver(this::updateTimer);
+        });
+    }
+
+    private void updateHead(Integer round) {
+        Platform.runLater(() -> {
+            lblHead.setText("Round " + round);
         });
     }
 

@@ -9,7 +9,7 @@ import server.db.model.User;
 import server.util.RidUtilities;
 import shared.event.ObservableField;
 import shared.game.GameData;
-import shared.handler.SocketHandler;
+import server.handler.SocketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shared.game.Board;
@@ -19,6 +19,7 @@ import shared.request.StatusCode;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameController extends Controller {
@@ -27,7 +28,7 @@ public class GameController extends Controller {
     private static final ConcurrentHashMap<Integer, GameController> gameControllers = new ConcurrentHashMap<>();
     private final GameState gameState;
     private final Player[] players = new Player[2];
-    private final ArrayList<SocketHandler> visitors = new ArrayList<>(); // TO DO make observer class
+    private final ConcurrentLinkedQueue<SocketHandler> visitors = new ConcurrentLinkedQueue<>();
     private final Context context = new Context();
     private Timer turnTimer = new Timer();
     private LocalTime turnStart;
@@ -150,6 +151,8 @@ public class GameController extends Controller {
         Packet packet = new Packet("end-turn");
         players[0].getSocketHandler().sendPacket(packet);
         players[1].getSocketHandler().sendPacket(packet);
+        for (SocketHandler socketHandler: visitors)
+            socketHandler.sendPacket(packet);
     }
 
     public void startGame(Boolean tmp) {
@@ -167,6 +170,8 @@ public class GameController extends Controller {
         turnStart = LocalTime.now();
         sendGameStateToUser(players[0].getId(), players[0].getSocketHandler());
         sendGameStateToUser(players[1].getId(), players[1].getSocketHandler());
+        for (SocketHandler socketHandler: visitors)
+            sendGameStateToUser(-1, socketHandler);
         turnTimer.cancel();
         turnTimer.purge();
         turnTimer = new Timer();
@@ -191,6 +196,8 @@ public class GameController extends Controller {
         packet.put("winner", winner);
         players[0].getSocketHandler().sendPacket(packet);
         players[1].getSocketHandler().sendPacket(packet);
+        for (SocketHandler socketHandler: visitors)
+            socketHandler.sendPacket(packet);
         try {
             context.gameStates.save(gameState);
             User user = context.users.get(players[winner].getId());
@@ -221,8 +228,14 @@ public class GameController extends Controller {
         startNewTurn();
     }
 
-    public void answerObserver(Packet packet) {
-        // TO DO
+    public void addObserver(Packet packet) {
+        SocketHandler socketHandler = SocketHandler.getSocketHandler(packet.getInt("handler"));
+        socketHandler.addDisconnectListener(() -> {
+            visitors.remove(socketHandler);
+        });
+        visitors.add(socketHandler);
+        if (gameState.getRound() != -1)
+            sendGameStateToUser(-1, socketHandler);
     }
 
     public GameData getGameData() {
@@ -263,6 +276,10 @@ public class GameController extends Controller {
                 else if (req.getInt("handler") == g.players[1].getSocketHandler().getId())
                     g.playTurn(req, g.players[1]);
             }
+            if (req.target.equals("game-data"))
+                return new Packet(StatusCode.OK).addObject("data", g.getGameData());
+            if (req.target.equals("game-observe"))
+                g.addObserver(req);
         }
         catch (Exception e) {
             logger.info("Invalid request was sent to game controller - " + e.getMessage());
