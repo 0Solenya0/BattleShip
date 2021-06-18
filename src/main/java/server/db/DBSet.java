@@ -19,9 +19,12 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 
 public class DBSet<T extends DBModel> {
+    private static final ConcurrentHashMap<String, ReentrantReadWriteLock> locks = new ConcurrentHashMap<>();
     private static final Logger logger = LogManager.getLogger(DBSet.class);
     Class<T> modelClass;
 
@@ -40,16 +43,23 @@ public class DBSet<T extends DBModel> {
     }
 
     public T get(int id) throws ConnectionException {
+        File path = new File(getDataSource() + "/" + id + ".json");
         try {
-            FileReader file = new FileReader(getDataSource() + "/" + id + ".json");
+            FileReader file = new FileReader(path);
+            if (!locks.containsKey(path.getPath()))
+                locks.put(path.getPath(), new ReentrantReadWriteLock());
+
+            locks.get(path.getPath()).readLock().lock();
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                     .create();
+            locks.get(path.getPath()).readLock().unlock();
             return gson.fromJson(file, modelClass);
         }
         catch (IOException e) {
+            locks.get(path.getPath()).readLock().unlock();
             logger.error("Can't Read Database Record File - " + e.getMessage());
             throw new ConnectionException();
         }
@@ -95,6 +105,10 @@ public class DBSet<T extends DBModel> {
         model.lastModified = LocalDateTime.now();
 
         File path = new File(getDataSource() + "/" + model.id + ".json");
+        if (!locks.containsKey(path.getPath()))
+            locks.put(path.getPath(), new ReentrantReadWriteLock());
+
+        locks.get(path.getPath()).writeLock().lock();
         if (path.exists())
             path.delete();
 
@@ -110,8 +124,10 @@ public class DBSet<T extends DBModel> {
         }
         catch (IOException e) {
             logger.error("Database Record File Was Not Saved - " + e.getMessage());
+            locks.get(path.getPath()).writeLock().unlock();
             throw new ConnectionException();
         }
+        locks.get(path.getPath()).writeLock().unlock();
 
         //logger.info(String.format("An instance of %s with id %s got saved.", modelClass.getClass(), model.id));
         return model;
