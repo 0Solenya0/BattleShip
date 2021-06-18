@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import shared.lock.CustomLock;
 import shared.request.Packet;
 import shared.request.PacketListener;
+import shared.util.Config;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SocketHandler extends shared.handler.SocketHandler {
+    private static final Config config = Config.getConfig("mainConfig");
     private static final ConcurrentHashMap<Integer, PacketListener> ridListeners = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, PacketListener> targetListener = new ConcurrentHashMap<>();
     private static final AtomicInteger lastRid = new AtomicInteger();
@@ -28,7 +30,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
         serviceLock.lock();
         if (socketHandler == null) {
             try {
-                socketHandler = new SocketHandler(new Socket("localhost", 8080));
+                socketHandler = new SocketHandler(new Socket("localhost", Integer.parseInt(config.getProperty("PORT"))));
             } catch (IOException e) {
                 logger.info("failed to open new connection with server");
                 throw new ConnectionException();

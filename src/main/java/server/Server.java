@@ -17,7 +17,7 @@ public class Server {
     private static shared.util.Config config = shared.util.Config.getConfig("mainConfig");
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(8080);
+        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(config.getProperty("PORT")));
         ExecutorService pool =
                 Executors.newFixedThreadPool(
                         Integer.parseInt(config.getProperty("SERVER_ACCEPTING_THREADS"))
