@@ -2,6 +2,7 @@ package server.db;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import server.db.annotation.NotNullable;
 import server.db.annotation.Unique;
 import server.db.exception.ConnectionException;
 import server.db.exception.ValidationException;
@@ -151,6 +152,19 @@ public class DBSet<T extends DBModel> {
                 });
                 if (m != null)
                     validationException.addError(field.getName(), field.getName() + " is not unique");
+            }
+        }
+        for (Field field: modelClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.getAnnotation(NotNullable.class) != null) {
+                try {
+                    if (field.get(model) == null)
+                        validationException.addError(field.getName(), field.getName() + " is empty");
+                }
+                catch (IllegalAccessException e) {
+                    logger.fatal("validation failed, failed to access models field - " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
         if (validationException.hasError())
