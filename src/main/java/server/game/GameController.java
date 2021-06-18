@@ -144,6 +144,7 @@ public class GameController extends Controller {
         packet.put("turn", gameState.getTurn());
         packet.put("round", gameState.getRound());
         packet.addObject("timeout", turnStart.plusNanos(TURN_TTL * 1000000L));
+        packet.put("viewer-cnt", visitors.size());
         socketHandler.sendPacket(packet);
     }
 

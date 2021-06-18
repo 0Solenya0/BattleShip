@@ -29,10 +29,10 @@ public class GameView implements Initializable {
     private GridPane gridpaneP1, gridpaneP2;
 
     @FXML
-    private Button btnAccept, btnReject;
+    private Button btnAccept, btnReject, btnMainMenu;
 
     @FXML
-    private Label lblP2, lblP1, lblHead, lblTimer;
+    private Label lblP2, lblP1, lblHead, lblTimer, lblViewerCnt;
 
     @FXML
     private Label lblActiveP1, lblActiveP2;
@@ -67,6 +67,7 @@ public class GameView implements Initializable {
 
     public void setGameControllerForObserver(GameController gameController) {
         Platform.runLater(() -> {
+            btnMainMenu.setVisible(true);
             lblHead.setText("waiting for players to set boards...");
             for (int k = 0; k < 2; k++) {
                 for (int i = 0; i < DIM; i++)
@@ -86,10 +87,17 @@ public class GameView implements Initializable {
             gameController.p2Name.addObserver((s) -> {
                 updateUserLabel(1, s);
             });
+            gameController.viewersCnt.addObserver(this::updateViewers);
             gameController.gameOver.addObserver(this::gameOver);
             gameController.turn.addObserver(this::updateTurn);
             gameController.round.addObserver(this::updateHead);
             gameController.timeout.addObserver(this::updateTimer);
+        });
+    }
+
+    private void updateViewers(Integer integer) {
+        Platform.runLater(() -> {
+            lblViewerCnt.setText(String.valueOf(integer));
         });
     }
 
@@ -128,6 +136,7 @@ public class GameView implements Initializable {
             gameController.p2Name.addObserver((s) -> {
                 updateUserLabel(1, s);
             });
+            gameController.viewersCnt.addObserver(this::updateViewers);
             gameController.gameOver.addObserver(this::gameOver);
             gameController.turn.addObserver(this::updateTurn);
             gameController.round.addObserver(this::updateHead);
@@ -252,9 +261,15 @@ public class GameView implements Initializable {
         gameController.rejectBoard();
     }
 
+    @FXML
+    void btnMainMenuClicked(ActionEvent event) {
+        ViewManager.goToMenu();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnReject.setVisible(false);
         btnAccept.setVisible(false);
+        btnMainMenu.setVisible(false);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Objects;
 public class GameController {
     private static int BOARD_SIZE = 10; // TO DO add config
     private int gameId;
-    public final ObservableField<Integer> playerNumber, turn, round, refreshBoard, winner;
+    public final ObservableField<Integer> playerNumber, turn, round, refreshBoard, winner, viewersCnt;
     public final ObservableField<String> p1Name, p2Name;
     private ArrayList<ObservableField<Board.Cell>> boards;
     public final ObservableField<Boolean> started, finalBoard, gameOver;
@@ -29,6 +29,7 @@ public class GameController {
         turn = new ObservableField<>();
         round = new ObservableField<>();
         winner = new ObservableField<>();
+        viewersCnt = new ObservableField<>();
         gameOver = new ObservableField<>();
         boards = new ArrayList<>();
         started = new ObservableField<>();
@@ -116,6 +117,7 @@ public class GameController {
         turn.set(packet.getInt("turn"));
         round.set(packet.getInt("round"));
         timeout.set(packet.getObject("timeout", LocalTime.class));
+        viewersCnt.set(packet.getInt("viewer-cnt"));
     }
 
     public void acceptBoard() {
