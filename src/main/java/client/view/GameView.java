@@ -69,6 +69,7 @@ public class GameView implements Initializable {
     }
 
     public void setGameControllerForObserver(GameController gameController) {
+        this.gameController = gameController;
         Platform.runLater(() -> {
             btnMainMenu.setVisible(true);
             lblHead.setText("waiting for players to set boards...");
