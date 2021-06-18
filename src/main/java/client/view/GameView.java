@@ -213,18 +213,26 @@ public class GameView implements Initializable {
     public void updateCell(Board.Cell value, StackPane pane) {
         Platform.runLater(() -> {
             Rectangle tile = (Rectangle) pane.getChildren().get(0);
+            if (pane.getChildren().size() > 1)
+                pane.getChildren().remove(1);
+            Label label = new Label();
+            label.getStyleClass().add("board_cell_obj");
+            pane.getChildren().add(label);
             switch (value) {
                 case SHIP -> {
-                    tile.setFill(Color.RED);
+                    label.setText("C");
+                    label.getStyleClass().add("board_ship_cell");
                 }
                 case HIT -> {
-                    tile.setFill(Color.BLACK);
+                    label.setText("r");
+                    label.getStyleClass().add("board_hit_cell");
                 }
                 case MISS -> {
-                    tile.setFill(Color.YELLOW);
+                    label.setText("z");
+                    label.getStyleClass().add("board_miss_cell");
                 }
                 case EMPTY -> {
-                    tile.setFill(Color.TRANSPARENT);
+                    pane.getChildren().remove(label);
                 }
             }
         });

@@ -47,7 +47,7 @@
 }
 
 .board {
-    -fx-background-image: url('images/water.jpg');
+    -fx-background-image: url('images/water.png');
 }
 
 .typecast {
@@ -104,4 +104,21 @@
 
 .offline_user {
     -fx-text-fill: red;
+}
+
+.board_cell_obj {
+    -fx-font-family: 'Pixel Icons Compilation';
+    -fx-font-size: 30;
+}
+
+.board_ship_cell {
+    -fx-text-fill: rgb(252, 219, 3);
+}
+
+.board_hit_cell {
+    -fx-text-fill: rgb(252, 3, 78);
+}
+
+.board_miss_cell {
+    -fx-text-fill: rgb(56, 209, 4);
 }
