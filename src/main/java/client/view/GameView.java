@@ -220,21 +220,21 @@ public class GameView implements Initializable {
             label.getStyleClass().add("board_cell_obj");
             pane.getChildren().add(label);
             switch (value) {
-                case SHIP -> {
+                case SHIP:
                     label.setText("C");
                     label.getStyleClass().add("board_ship_cell");
-                }
-                case HIT -> {
+                    break;
+                case HIT:
                     label.setText("r");
                     label.getStyleClass().add("board_hit_cell");
-                }
-                case MISS -> {
+                    break;
+                case MISS:
                     label.setText("z");
                     label.getStyleClass().add("board_miss_cell");
-                }
-                case EMPTY -> {
+                    break;
+                case EMPTY:
                     pane.getChildren().remove(label);
-                }
+                    break;
             }
         });
     }
