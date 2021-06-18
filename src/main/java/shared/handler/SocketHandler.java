@@ -65,10 +65,12 @@ public abstract class SocketHandler implements PacketListener {
         }
     }
 
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet packet) throws SocketException {
         outputStreamLock.lock();
         try {
             outputStream.writeObject(packet);
+        } catch (SocketException e) {
+            throw e;
         } catch (IOException e) {
             logger.error("failed to send response to user - " + e.getMessage());
             e.printStackTrace();

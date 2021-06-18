@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import shared.util.Config;
-import view.InfoDialog;
+import client.view.InfoDialog;
 
 import java.io.IOException;
 import java.util.Objects;

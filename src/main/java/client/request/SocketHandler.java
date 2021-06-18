@@ -12,6 +12,7 @@ import shared.util.Config;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -92,7 +93,12 @@ public class SocketHandler extends shared.handler.SocketHandler {
     public void sendPacket(Packet packet) {
         if (UserData.getAuthToken() != null)
             packet.put("auth-token", UserData.getAuthToken());
-        super.sendPacket(packet);
+        try {
+            super.sendPacket(packet);
+        }
+        catch (SocketException e) {
+            ViewManager.connectionError();
+        }
     }
 
     public void addTargetListener(String target, PacketListener listener) {

@@ -6,6 +6,7 @@ import shared.request.Packet;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,5 +37,15 @@ public class SocketHandler extends shared.handler.SocketHandler {
         Packet response = requestHandler.next();
         if (response != null)
             sendPacket(response);
+    }
+
+    public void sendPacket(Packet packet) {
+        try {
+            super.sendPacket(packet);
+        } catch (SocketException e) {
+            logger.error("server failed to send response - " + e.getMessage());
+            System.out.println("Unexpected broken pipe");
+            e.printStackTrace();
+        }
     }
 }
