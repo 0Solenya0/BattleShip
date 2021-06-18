@@ -4,6 +4,7 @@ import server.handler.RequestHandler;
 import server.request.ridListener;
 import shared.request.Packet;
 import shared.request.PacketListener;
+import shared.request.StatusCode;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +25,8 @@ public class ServerRID extends Middleware {
 
     @Override
     public Packet process() {
-        // TO DO invalid requests
+        if (req.hasKey("rid") && !ridListeners.containsKey(req.getInt("rid")))
+            return new Packet(StatusCode.NOT_FOUND);
         if (req.hasKey("rid"))
             return ridListeners.get(req.getInt("rid")).listenPacket(req);
         return next();

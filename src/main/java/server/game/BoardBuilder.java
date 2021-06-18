@@ -1,11 +1,13 @@
 package server.game;
 
 import shared.game.Board;
+import shared.util.Config;
 
 import java.util.Random;
 
 public class BoardBuilder {
-    private static int SIZE = 10; // TO DO get from server.config
+    private static final Config config = Config.getConfig("mainConfig");
+    private static final int SIZE = Integer.parseInt(config.getProperty("BOARD_SIZE"));
     private static short[] dx = new short[]{0, 0, -1, -1, -1, 1, 1, 1};
     private static short[] dy = new short[]{1, -1, -1, 0, 1, -1, 0, 1};
     private short[][] board = new short[SIZE][SIZE];

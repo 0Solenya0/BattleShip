@@ -84,6 +84,10 @@ public class ViewManager extends Application {
         window.show();
     }
 
+    public static void ConnectionError() {
+        // TO DO implement
+    }
+
     public static Stage getWindow() {
         return window;
     }

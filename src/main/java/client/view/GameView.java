@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import shared.game.Board;
+import shared.util.Config;
 
 import java.net.URL;
 import java.time.Duration;
@@ -23,7 +24,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameView implements Initializable {
-    private static final int BOARD_SIZE = 450, DIM = 10; // TO DO add config
+    private static final Config config = Config.getConfig("mainConfig");
+    private static final int DIM = Integer.parseInt(config.getProperty("BOARD_SIZE"));
+    private static final int BOARD_SIZE = Integer.parseInt(config.getProperty("GRID_PANE_DIM"));
 
     @FXML
     private GridPane gridpaneP1, gridpaneP2;
@@ -111,7 +114,7 @@ public class GameView implements Initializable {
         System.out.println(start);
         Platform.runLater( () -> {
             if (!start) {
-                lblHead.setText("Searching for an opponent"); // TO DO add config
+                lblHead.setText("Searching for an opponent");
                 return;
             }
             for (int k = 0; k < 2; k++) {

@@ -1,9 +1,13 @@
 package shared.game;
 
+import shared.util.Config;
+
 import java.util.HashSet;
 
 public class Board {
-    private static final int SIZE = 10, SHIP_CNT = 10; // TO DO add config
+    private static final Config config = Config.getConfig("mainConfig");
+    private static final int SHIP_CNT = Integer.parseInt(config.getProperty("SHIP_CNT"));
+    private static final int SIZE = Integer.parseInt(config.getProperty("BOARD_SIZE"));
     private static short[] dx = new short[]{0, 0, -1, -1, -1, 1, 1, 1};
     private static short[] dy = new short[]{1, -1, -1, 0, 1, -1, 0, 1};
 

@@ -6,13 +6,15 @@ import client.request.exception.ConnectionException;
 import shared.game.Board;
 import shared.game.GameData;
 import shared.request.Packet;
+import shared.util.Config;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameController {
-    private static int BOARD_SIZE = 10; // TO DO add config
+    private static final Config config = Config.getConfig("mainConfig");
+    private static final int BOARD_SIZE = Integer.parseInt(config.getProperty("BOARD_SIZE"));
     private int gameId;
     public final ObservableField<Integer> playerNumber, turn, round, refreshBoard, winner, viewersCnt;
     public final ObservableField<String> p1Name, p2Name;

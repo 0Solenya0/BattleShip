@@ -14,9 +14,14 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private static final Logger logger = LogManager.getLogger(Server.class);
+    private static shared.util.Config config = shared.util.Config.getConfig("mainConfig");
+
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(8080);
-        ExecutorService pool = Executors.newFixedThreadPool(10); // TO DO server.config
+        ExecutorService pool =
+                Executors.newFixedThreadPool(
+                        Integer.parseInt(config.getProperty("SERVER_ACCEPTING_THREADS"))
+                );
         Config.initiate();
         System.out.println("Ready for new connections");
         while (true) {

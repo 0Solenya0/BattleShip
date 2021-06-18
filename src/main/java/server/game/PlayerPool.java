@@ -30,11 +30,11 @@ public class PlayerPool {
     }
 
     public void addPlayer(SocketHandler socketHandler, int userid) {
-        removePlayer(socketHandler);// TO DO remove with respect to userid
+        removePlayer(userid);
         lock.lock();
         Player player = new Player(socketHandler, userid);
         player.addOnDisconnectListener(() -> {
-            removePlayer(socketHandler); // TO DO
+            removePlayer(userid);
         });
         players.add(player);
         logger.info("player with id " + userid + " was added to pool");
@@ -49,10 +49,10 @@ public class PlayerPool {
         lock.unlock();
     }
 
-    public void removePlayer(SocketHandler socketHandler) {
+    public void removePlayer(int userId) {
         lock.lock();
         for (Player player: players)
-            if (player.getSocketHandler().equals(socketHandler)) {
+            if (player.getId() == userId) {
                 players.remove(player);
                 System.out.println("removed player from pool");
                 break;

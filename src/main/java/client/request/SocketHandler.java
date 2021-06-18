@@ -2,6 +2,7 @@ package client.request;
 
 import client.db.UserData;
 import client.request.exception.ConnectionException;
+import client.view.ViewManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shared.lock.CustomLock;
@@ -54,7 +55,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
         try {
             return getSocketHandler();
         } catch (ConnectionException e) {
-            // TO DO display connection error by viewmanager
+            ViewManager.ConnectionError();
             return null;
         }
     }

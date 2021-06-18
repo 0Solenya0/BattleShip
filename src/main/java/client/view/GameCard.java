@@ -4,9 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import shared.game.GameData;
+import shared.util.Config;
 
 public class GameCard {
-    private static int SHIP_CNT = 10; // TO DO add config
+    private static final Config config = Config.getConfig("mainConfig");
+    private static final int SHIP_CNT = Integer.parseInt(config.getProperty("SHIP_CNT"));
 
     @FXML
     private Label lblHeader, lblDestroyedP1, lblHitP1, lblDestroyedP2, lblHitP2, lblRounds;

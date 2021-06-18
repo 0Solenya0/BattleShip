@@ -21,8 +21,9 @@ public class LoginController extends Controller {
             if (Auth.isUserOnline(user.id))
                 return new Packet(StatusCode.BAD_REQUEST).put("error", "User is already logged in with another device");
             if (user.checkPassword(password)) {
-                return response.put("auth-token", Auth.registerUser(user.id, req.getInt("handler")))
-                        .put("user-id", user.id); // TO DO Handle AuthToken
+                return response
+                        .put("auth-token", Auth.registerUser(user.id, req.getInt("handler")))
+                        .put("user-id", user.id);
             }
         }
         return new Packet(StatusCode.BAD_REQUEST).put("error", "Username or password is wrong!");
