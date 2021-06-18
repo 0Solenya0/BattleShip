@@ -57,7 +57,7 @@ public class SocketHandler extends shared.handler.SocketHandler {
         try {
             return getSocketHandler();
         } catch (ConnectionException e) {
-            ViewManager.ConnectionError();
+            ViewManager.connectionError();
             return null;
         }
     }

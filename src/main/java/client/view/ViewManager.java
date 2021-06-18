@@ -1,5 +1,6 @@
 package client.view;
 
+import client.request.exception.ConnectionException;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import shared.util.Config;
+import view.InfoDialog;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,6 +27,15 @@ public class ViewManager extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        Thread.currentThread().setUncaughtExceptionHandler(((thread, throwable) -> {
+            if (throwable.getCause().getCause() instanceof ConnectionException)
+                ViewManager.connectionError();
+            else {
+                logger.error("Unexpected error - " + throwable.getMessage());
+                logger.trace(throwable);
+                logger.trace(throwable.getCause());
+            }
+        }));
         window = primaryStage;
         goToLogin();
     }
@@ -84,8 +95,8 @@ public class ViewManager extends Application {
         window.show();
     }
 
-    public static void ConnectionError() {
-        // TO DO implement
+    public static void connectionError() {
+        InfoDialog.showFailed("Connection to server failed!\nPlease reload the program");
     }
 
     public static Stage getWindow() {
