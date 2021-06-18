@@ -154,6 +154,6 @@ public class DBSet<T extends DBModel> {
             }
         }
         if (validationException.hasError())
-            throw new ValidationException();
+            throw validationException;
     }
 }
